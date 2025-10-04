@@ -1,84 +1,16 @@
-import {useState } from "react";
+import {usestate } from "react";
 
-function App() {
+function app () { 
+  const [pestaña, setpestaña] = usestate("Inicio"); // pestaña activa 
+  const [areaseleccionada, setAreaseleccionada] = usestate(null); 
 
-  function App () {
-    const [pantalla, setPantalla] = useState("Inicio"); // control de pantalla
+  // datos del clima simulados por cada area
 
-    return (
-     < div 
-     style={{
-      fontFamily: 'Arial, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignContent: 'center',
-      height: '100vh',
-      backgroundColor: '#f0f4f8',
-      textAlign : 'center',
-     }}
-      >
-
-        {pantalla === "Inicio" && (
-        <>
-
-        <h1 style={{ fontSize: "4rem", marginBottom: "50px", color: "#4CAF50" }}> 
-          chweck-now
-
-           </h1>
-
-           <button
-
-            onClick={() => alert("Ir a incio de sesión")}
-            style={{
-              padding: "15px 30px",
-              fontSize: "1.5rem",
-              margin: "10px",
-              borderRadius: "8px",
-              border: "none",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-            >
-
-            Iniciar sesión
-            </button>
-
-            <button
-            onClick={() => alert("Ir  a crear cuenta")}
-            style={{
-              padding: "15px 30px",
-              fontSize: "1.5rem",
-              margin: "10px",
-              borderRadius: "8px",
-              border: "2px solid #4CAF50",
-              backgrounn: "white",
-              color: "#4CAF50",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-
-            }}
-            > 
-
-            Crear cuenta  
-            </button>
-          </>  
-        )}
-      </div>
-    );
-  }
+  const datosclima ={
+    "Area1 - Norte": { temperatura: "22°C", humedad: "60%", viento: "15 km/h" },
+    "Area2 - Sur": { temperatura: "25°C", humedad: "55%", viento: "10 km/h" },
+    "Area3 - Este": { temperatura: "20°C", humedad: "70%", viento: "20 km/h" },
+    "Area4 - Oeste": { temperatura: "23°C", humedad: "65%", viento: "12 km/h" },
+  };
 }
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-  
