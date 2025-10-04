@@ -1,9 +1,0 @@
-fastapi
-uvicorn[standard]
-# Herramientas para Data Science y el modelo de riesgo
-pandas
-scikit-learn
-numpy
-# Opcionales, datos climáticos de la NASA (NetCDF, GRIB)
-xarray
-netCDF4
