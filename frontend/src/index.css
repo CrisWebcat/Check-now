@@ -1,68 +1,227 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0d1117; /* Fondo oscuro espacial */
+  color: #e6edf3; /* Texto claro */
+  overflow-x: hidden; /* Evitar scroll horizontal */
+}
+
+/* Contenedor principal de la bienvenida */
+.bienvenida-container {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Alinea el contenido al principio (para que el nav esté arriba) */
+  position: relative;
+  background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%); /* Gradiente sutil */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Navegación */
+.navbar {
+  width: 100%;
+  background-color: rgba(17, 24, 39, 0.8); /* Fondo con transparencia */
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: fixed; /* Barra fija en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00bcd4; /* Color llamativo para la marca */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2.5rem; /* Espacio entre los elementos del menú */
+}
+
+.nav-links li a {
+  color: #e6edf3;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #00bcd4; /* Efecto hover */
+}
+
+/* Botón de hamburguesa para móviles */
+.menu-toggle {
+  display: none; /* Oculto por defecto en pantallas grandes */
+  background: none;
+  border: none;
+  color: #e6edf3;
+  font-size: 2rem;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Sección Hero (Bienvenida Principal) */
+.hero-section {
+  text-align: center;
+  padding: 8rem 2rem 4rem; /* Ajusta el padding para que no se solape con el nav */
+  max-width: 900px;
+  margin-top: 60px; /* Espacio para la barra de navegación fija */
+  flex-grow: 1; /* Permite que esta sección ocupe el espacio restante */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  color: #b3e0f2; /* Color para el título principal */
+  text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+.hero-content p {
+  font-size: 1.4rem;
+  margin-bottom: 2.5rem;
+  color: #aebacd;
+}
+
+.btn-explorar {
+  background-color: #00bcd4;
+  color: #0d1117;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+}
+
+.btn-explorar:hover {
+  background-color: #0097a7;
+  transform: translateY(-2px);
+}
+
+/* Planeta Girando */
+.planet-container {
+  width: 250px; /* Tamaño del contenedor */
+  height: 250px;
+  perspective: 1000px; /* Profundidad para la rotación 3D */
+  margin-top: 3rem;
+  position: relative;
+}
+
+.planet {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #5d8eef, #3456b3 60%, #1a2b5e); /* Gradiente para el planeta */
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5), /* Sombras internas */
+              0 0 60px rgba(52, 86, 179, 0.8); /* Resplandor externo */
+  animation: rotatePlanet 15s linear infinite; /* Animación de rotación */
+  position: relative;
+  transform-style: preserve-3d; /* Esencial para el pseudo-elemento */
+}
+
+/* Animación del Planeta */
+@keyframes rotatePlanet {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+/* Añadir un "anillo" o "atmosfera" al planeta */
+.planet::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 15px; /* Grosor del anillo */
+    background: rgba(179, 224, 242, 0.3); /* Color semi-transparente */
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotateX(75deg) rotateY(20deg); /* Inclinar el anillo */
+    box-shadow: 0 0 15px rgba(179, 224, 242, 0.6);
+    z-index: -1; /* Detrás del planeta */
+}
+
+
+/* --- Media Queries para Responsive Design (Menú de Hamburguesa) --- */
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
   }
-  a:hover {
-    color: #747bff;
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(17, 24, 39, 0.95);
+    position: absolute;
+    top: 100%; /* Debajo de la navbar */
+    left: 0;
+    padding: 1rem 0;
+    max-height: 0; /* Oculto por defecto */
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
   }
-  button {
-    background-color: #f9f9f9;
+
+  .nav-links.active {
+    max-height: 300px; /* Muestra el menú cuando está activo */
+    padding: 1rem 0;
   }
+
+  .nav-links li {
+    margin: 0.5rem 0;
+  }
+
+  .menu-toggle {
+    display: block; /* Muestra el botón de hamburguesa */
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+
+  .planet-container {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/* Opcional: Pequeña animación para la nube o el resplandor */
+.bienvenida-container::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(30px);
+    animation: pulseGlow 8s infinite alternate ease-in-out;
+    z-index: -1;
+}
+
+@keyframes pulseGlow {
+    from { transform: scale(0.8); opacity: 0.6; }
+    to { transform: scale(1.2); opacity: 0.9; }
 }

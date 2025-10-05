@@ -1,25 +1,47 @@
 
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
+import './index.css'; 
 
 function App() {
-  const [contador, setContador] = useState(0); 
+  const [menuAbierto, setMenuAbierto] = useState(false); // Estado para controlar si el menú está abierto
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
+
   return (
-    <div className="App">
-      {/* 3. Escribe tus elementos HTML y componentes de React aquí */}
-      <h1>HELLO NASA</h1>
-      <p>
-        Este es el contenido de mi archivo <strong>App.jsx</strong>.
-      </p>
-      
-      {/* 4. Puedes inyectar variables de JavaScript con llaves {} */}
-      <button onClick={() => setContador(contador + 1)}>
-        Clics: {contador}
-      </button>
-      
-      {/* 5. Aquí podrías renderizar otros componentes (como <MiHeader />) */}
+    <div className="bienvenida-container">
+      {/* Barra de Navegación / Menú */}
+      <nav className="navbar">
+        <div className="navbar-brand">Check Now</div>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          {menuAbierto ? '✕' : '☰'} {/**/}
+        </button>
+        <ul className={`nav-links ${menuAbierto ? 'active' : ''}`}>
+          <li><a href="#inicio">Home</a></li>
+          <li><a href="#clima">weather</a></li>
+          <li><a href="#about">About us</a></li>
+          <li><a href="#contacto">Contact</a></li>
+        </ul>
+      </nav>
+
+      {/* Contenido Principal de Bienvenida */}
+      <header className="hero-section">
+        <div className="hero-content">
+          <h1>explore your future!</h1>
+          <p>Don't worry about whether it will rain at your next destination!</p>
+          <button className="btn-explorar">check the weather</button>
+        </div>
+        
+        {/* Planeta Girando (Animado con CSS) */}
+        <div className="planet-container">
+          <div className="planet"></div>
+        </div>
+      </header>
+
+      {/* */}
     </div>
   );
 }
 
-// 6. Exporta el componente para que pueda ser usado en el archivo principal (main.jsx)
 export default App;
