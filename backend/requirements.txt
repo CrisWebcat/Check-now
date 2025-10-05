@@ -1,10 +1,9 @@
-fastapi==0.111.2
-uvicorn[standard]==0.24.0
-pandas==2.1.1
-numpy==1.26.0
-scikit-learn==1.3.1
-xarray==2025.2.0
-netCDF4==1.6.2
-geopy==2.3.0
-python-dotenv==1.0.0
-requests==2.31.0
+fastapi
+uvicorn[standard]
+# Herramientas para Data Science y el modelo de riesgo
+pandas
+scikit-learn
+numpy
+# Opcionales, datos climáticos de la NASA (NetCDF, GRIB)
+xarray
+netCDF4
