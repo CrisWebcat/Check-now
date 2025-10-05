@@ -1,4 +1,3 @@
-/* src/index.css - CÓDIGO FINAL CON EL PLANETA COMO FONDO */
 
 /* ------------------------------------------- */
 /* 1. ESTILOS BASE Y FONDO ESPACIAL */
@@ -20,7 +19,6 @@ body {
     align-items: center;
     justify-content: flex-start;
     position: relative;
-    /* Mantén el fondo sutil, el planeta será el fondo principal */
     background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%);
 }
 
@@ -40,7 +38,7 @@ body {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000; /* Z-index alto para estar sobre el contenido y el planeta */
+    z-index: 1000;
 }
 
 .navbar-brand {
@@ -104,7 +102,7 @@ body {
     flex-basis: 40%;
     text-align: left;
     margin-bottom: 0; 
-    z-index: 2; /* Asegura que el texto esté visible sobre el planeta */
+    z-index: 2; 
 }
 
 .hero-content h1 {
@@ -137,38 +135,28 @@ body {
     background-color: #0097a7;
     transform: translateY(-2px);
 }
-
 /* ------------------------------------------- */
-/* 4. PLANETA 3D (react-globe.gl) - ¡AJUSTES CLAVE PARA EL FONDO! */
+/* 4. PLANETA 3D (react-globe.gl) - ESTILOS BASE DE FONDO */
 /* ------------------------------------------- */
 .planet-container, .planet-container-3d {
-    /* CAMBIO CLAVE: Posicionamiento para fondo */
     position: absolute; 
     top: 50%;
     left: 50%;
-    /* Centra y posiciona como fondo */
     transform: translate(-50%, -50%); 
-    
-    /* CAMBIO CLAVE: Tamaño grande para cubrir la pantalla */
-    width: 150vw; /* Cubre 150% del ancho del viewport */
-    height: 150vh; /* Cubre 150% del alto del viewport */
+    width: 150vw; 
+    height: 150vh; 
     max-width: none;
     max-height: none;
-
-    /* CAMBIO CLAVE: Z-Index muy bajo para quedar detrás de todo */
     z-index: 0; 
-    
-    /* Limpieza de estilos que ya no aplican en modo fondo */
     flex-basis: auto; 
     margin: 0; 
     background: none !important; 
 }
-
-
 /* ------------------------------------------- */
-/* 5. MEDIA QUERIES (RESPONSIVE) */
+/* 5. MEDIA QUERIES (RESPONSIVE) 
 /* ------------------------------------------- */
 
+/* Tablet  */
 @media (max-width: 992px) {
     .hero-section {
         flex-direction: column; 
@@ -183,18 +171,14 @@ body {
         margin-bottom: 3rem;
         flex-basis: 100%;
     }
-
-    /* Ajuste del planeta en tablets: mantenemos el modo fondo */
     .planet-container, .planet-container-3d {
-        width: 180vw;
-        height: 180vh;
-        transform: translate(-50%, -50%); 
-        margin-bottom: 0;
-        margin-top: 0;
-        order: 3; /* Asegura que no estorbe el flujo aunque esté posicionado absoluto */
+        width: 120vw;
+        height: 120vh;
+        transform: translate(-30%, -30%); 
     }
 }
 
+/* Móvil */
 @media (max-width: 768px) {
     .navbar {
         flex-wrap: wrap; 
@@ -239,13 +223,10 @@ body {
     .hero-content p {
         font-size: 1.1rem;
     }
-    
-    /* Ajuste del planeta en móviles: lo hacemos más grande para un efecto más de cerca/abstracto */
     .planet-container, .planet-container-3d {
-        width: 250vw;
-        height: 250vh;
-        /* Puedes moverlo para que solo se vea un cuadrante, por ejemplo: */
-        transform: translate(-60%, -40%); 
+        width: 200vw;
+        height: 200vh;
+        transform: translate(-40%, 10%); 
     }
 }
 
@@ -263,7 +244,7 @@ body {
     border-radius: 50%;
     filter: blur(30px);
     animation: pulseGlow 8s infinite alternate ease-in-out;
-    z-index: 1; /* Aseguramos que el brillo esté sobre el planeta (z-index: 0) */
+    z-index: 1;
 }
 
 @keyframes pulseGlow {
