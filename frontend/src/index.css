@@ -1,4 +1,4 @@
-/* src/index.css - CÓDIGO FINAL Y ARREGLADO (Espaciado Lateral Corregido y Contenido visible) */
+/* src/index.css - CÓDIGO FINAL CON EL PLANETA COMO FONDO */
 
 /* ------------------------------------------- */
 /* 1. ESTILOS BASE Y FONDO ESPACIAL */
@@ -20,6 +20,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     position: relative;
+    /* Mantén el fondo sutil, el planeta será el fondo principal */
     background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%);
 }
 
@@ -28,7 +29,7 @@ body {
 /* ------------------------------------------- */
 .navbar {
     width: 100%;
-    max-width: 1500px; /* Asegura que la navbar no se estire indefinidamente */
+    max-width: 1500px;
     background-color: rgba(17, 24, 39, 0.8);
     padding: 1rem 6rem; 
     display: flex;
@@ -37,9 +38,9 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     position: fixed;
     top: 0;
-    left: 50%; /* Centrar la barra en la pantalla */
+    left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 1000; /* Z-index alto para estar sobre el contenido y el planeta */
 }
 
 .navbar-brand {
@@ -83,19 +84,15 @@ body {
 /* ------------------------------------------- */
 .hero-section {
     text-align: left;
-    max-width: 1400px; /* Asegura que el contenido no se estire indefinidamente */
+    max-width: 1400px;
     margin: 60px auto 0; 
     flex-grow: 1; 
     
     display: flex; 
     flex-direction: row; 
-    /* ✅ Usar space-between para empujar el texto a la izquierda y el planeta a la derecha 
-       dentro del padding de 6rem */
     justify-content: space-between; 
-    /* 🚀 CAMBIO CLAVE: Alinea todo el contenido arriba */
     align-items: flex-start; 
     
-    /* ✅ AJUSTE CRÍTICO: Usar 6rem de padding horizontal para el mismo espaciado que la navbar */
     padding: 6rem 6rem 4rem; 
     
     min-height: calc(100vh - 60px);
@@ -104,18 +101,13 @@ body {
 }
 
 .hero-content {
-    /* ✅ Restaurar flex-basis a 40% o incluso 50% para que el texto tenga más espacio.
-       Dependerá de cuánto quieres que abarque el planeta */
-    flex-basis: 40%; /* Podrías probar con 45% o 50% si el texto sigue pareciendo pequeño */
+    flex-basis: 40%;
     text-align: left;
     margin-bottom: 0; 
-    z-index: 2;
-    /* 🚀 OPCIONAL: Puedes añadir un margin-top si el texto necesita subir más */
-    /* margin-top: 50px; */ 
+    z-index: 2; /* Asegura que el texto esté visible sobre el planeta */
 }
 
 .hero-content h1 {
-    /* ✅ Restaurar el tamaño de fuente original de 3.5rem (antes 4rem) */
     font-size: 3.5rem;
     margin-bottom: 1rem;
     color: #b3e0f2;
@@ -123,7 +115,6 @@ body {
 }
 
 .hero-content p {
-    /* ✅ Restaurar el tamaño de fuente original de 1.4rem */
     font-size: 1.4rem;
     margin-bottom: 2.5rem;
     color: #aebacd;
@@ -148,22 +139,29 @@ body {
 }
 
 /* ------------------------------------------- */
-/* 4. PLANETA 3D (react-globe.gl) */
+/* 4. PLANETA 3D (react-globe.gl) - ¡AJUSTES CLAVE PARA EL FONDO! */
 /* ------------------------------------------- */
 .planet-container, .planet-container-3d {
-    /* 🚀 CAMBIO CLAVE: Reduce el tamaño del planeta */
-    width: 400px; /* Puedes probar con 350px o incluso 300px */
-    height: 400px; /* Asegúrate de que coincida con el width para mantener la proporción */
-    /* ✅ Ajustamos flex-basis para balancear con el hero-content */
-    flex-basis: 40%; /* Si hero-content es 40%, puedes dejar este en 40% para que el resto sea espacio */
+    /* CAMBIO CLAVE: Posicionamiento para fondo */
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    /* Centra y posiciona como fondo */
+    transform: translate(-50%, -50%); 
+    
+    /* CAMBIO CLAVE: Tamaño grande para cubrir la pantalla */
+    width: 150vw; /* Cubre 150% del ancho del viewport */
+    height: 150vh; /* Cubre 150% del alto del viewport */
+    max-width: none;
+    max-height: none;
+
+    /* CAMBIO CLAVE: Z-Index muy bajo para quedar detrás de todo */
+    z-index: 0; 
+    
+    /* Limpieza de estilos que ya no aplican en modo fondo */
+    flex-basis: auto; 
     margin: 0; 
-    position: relative;
-    z-index: 1; 
     background: none !important; 
-    /* 🚀 CAMBIO CLAVE: Sube el planeta */
-    margin-top: -50px; /* Ajusta este valor para subir o bajar el planeta */
-    /* Opcional: Si quieres control más fino, puedes usar transform */
-    /* transform: translateY(-50px); */
 }
 
 
@@ -175,9 +173,7 @@ body {
     .hero-section {
         flex-direction: column; 
         text-align: center; 
-        /* ✅ Restaurar padding más adecuado para tabletas */
-        padding: 5rem 2rem 4rem; /* Un padding de 2rem lateral para dispositivos medianos */
-        /* 🚀 CAMBIO CLAVE: Alinea todo el contenido arriba en responsive también */
+        padding: 5rem 2rem 4rem;
         align-items: flex-start; 
     }
     
@@ -186,35 +182,29 @@ body {
         text-align: center;
         margin-bottom: 3rem;
         flex-basis: 100%;
-        /* 🚀 OPCIONAL: Restablece el margin-top para responsive si lo habías puesto antes */
-        /* margin-top: 0; */
     }
 
+    /* Ajuste del planeta en tablets: mantenemos el modo fondo */
     .planet-container, .planet-container-3d {
-        order: 2;
-        /* ✅ Restaurar el tamaño del planeta que tenías en tablets (300px) o ajustarlo a 350px si lo prefieres */
-        width: 300px; /* O 350px si quieres que sea un poco más grande en tablets */
-        height: 300px; /* O 350px */
-        margin-bottom: 3rem;
-        /* 🚀 CAMBIO CLAVE: Restablece o ajusta el margin-top para responsive */
-        margin-top: 0; /* O ajusta a un valor positivo o negativo si quieres subirlo/bajarlo en tablet */
+        width: 180vw;
+        height: 180vh;
+        transform: translate(-50%, -50%); 
+        margin-bottom: 0;
+        margin-top: 0;
+        order: 3; /* Asegura que no estorbe el flujo aunque esté posicionado absoluto */
     }
 }
 
 @media (max-width: 768px) {
     .navbar {
         flex-wrap: wrap; 
+        padding: 1rem 2rem; 
     }
     
     .navbar, .hero-section {
         max-width: 100%; 
     }
     
-    /* Restaurar el padding estándar de la navbar en móvil */
-    .navbar {
-        padding: 1rem 2rem; 
-    }
-
     .nav-links {
         flex-direction: column;
         width: 100%;
@@ -249,6 +239,14 @@ body {
     .hero-content p {
         font-size: 1.1rem;
     }
+    
+    /* Ajuste del planeta en móviles: lo hacemos más grande para un efecto más de cerca/abstracto */
+    .planet-container, .planet-container-3d {
+        width: 250vw;
+        height: 250vh;
+        /* Puedes moverlo para que solo se vea un cuadrante, por ejemplo: */
+        transform: translate(-60%, -40%); 
+    }
 }
 
 /* ------------------------------------------- */
@@ -265,7 +263,7 @@ body {
     border-radius: 50%;
     filter: blur(30px);
     animation: pulseGlow 8s infinite alternate ease-in-out;
-    z-index: -1;
+    z-index: 1; /* Aseguramos que el brillo esté sobre el planeta (z-index: 0) */
 }
 
 @keyframes pulseGlow {
