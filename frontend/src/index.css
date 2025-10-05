@@ -1,212 +1,259 @@
+/* src/index.css - CÓDIGO FINAL Y ARREGLADO (Espaciado Lateral Corregido y Contenido visible) */
 
+/* ------------------------------------------- */
+/* 1. ESTILOS BASE Y FONDO ESPACIAL */
+/* ------------------------------------------- */
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #0d1117; /* Fondo oscuro espacial */
-  color: #e6edf3; /* Texto claro */
-  overflow-x: hidden; /* Evitar scroll horizontal */
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #0d1117; 
+    color: #e6edf3; 
+    overflow-x: hidden;
 }
 
-/* Contenedor principal de la bienvenida */
 .bienvenida-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Alinea el contenido al principio (para que el nav esté arriba) */
-  position: relative;
-  background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%); /* Gradiente sutil */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%);
 }
 
-/* Navegación */
+/* ------------------------------------------- */
+/* 2. BARRA DE NAVEGACIÓN (NAVBAR) */
+/* ------------------------------------------- */
 .navbar {
-  width: 100%;
-  background-color: rgba(17, 24, 39, 0.8); /* Fondo con transparencia */
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  position: fixed; /* Barra fija en la parte superior */
-  top: 0;
-  left: 0;
-  z-index: 1000;
+    width: 100%;
+    max-width: 1500px; /* Asegura que la navbar no se estire indefinidamente */
+    background-color: rgba(17, 24, 39, 0.8);
+    padding: 1rem 6rem; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 50%; /* Centrar la barra en la pantalla */
+    transform: translateX(-50%);
+    z-index: 1000;
 }
 
 .navbar-brand {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #00bcd4; /* Color llamativo para la marca */
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #00bcd4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .nav-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 2.5rem; /* Espacio entre los elementos del menú */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem; 
 }
 
 .nav-links li a {
-  color: #e6edf3;
-  text-decoration: none;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
+    color: #e6edf3;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
 }
 
 .nav-links li a:hover {
-  color: #00bcd4; /* Efecto hover */
+    color: #00bcd4;
 }
 
-/* Botón de hamburguesa para móviles */
 .menu-toggle {
-  display: none; /* Oculto por defecto en pantallas grandes */
-  background: none;
-  border: none;
-  color: #e6edf3;
-  font-size: 2rem;
-  cursor: pointer;
+    display: none;
+    background: none;
+    border: none;
+    color: #e6edf3;
+    font-size: 2rem;
+    cursor: pointer;
 }
 
-/* Sección Hero (Bienvenida Principal) */
+/* ------------------------------------------- */
+/* 3. SECCIÓN HERO (CONTENIDO PRINCIPAL) - LAYOUT Y ALINEACIÓN */
+/* ------------------------------------------- */
 .hero-section {
-  text-align: center;
-  padding: 8rem 2rem 4rem; /* Ajusta el padding para que no se solape con el nav */
-  max-width: 900px;
-  margin-top: 60px; /* Espacio para la barra de navegación fija */
-  flex-grow: 1; /* Permite que esta sección ocupe el espacio restante */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    text-align: left;
+    max-width: 1400px; /* Asegura que el contenido no se estire indefinidamente */
+    margin: 60px auto 0; 
+    flex-grow: 1; 
+    
+    display: flex; 
+    flex-direction: row; 
+    /* ✅ Usar space-between para empujar el texto a la izquierda y el planeta a la derecha 
+       dentro del padding de 6rem */
+    justify-content: space-between; 
+    /* 🚀 CAMBIO CLAVE: Alinea todo el contenido arriba */
+    align-items: flex-start; 
+    
+    /* ✅ AJUSTE CRÍTICO: Usar 6rem de padding horizontal para el mismo espaciado que la navbar */
+    padding: 6rem 6rem 4rem; 
+    
+    min-height: calc(100vh - 60px);
+    width: 100%; 
+    position: relative;
+}
+
+.hero-content {
+    /* ✅ Restaurar flex-basis a 40% o incluso 50% para que el texto tenga más espacio.
+       Dependerá de cuánto quieres que abarque el planeta */
+    flex-basis: 40%; /* Podrías probar con 45% o 50% si el texto sigue pareciendo pequeño */
+    text-align: left;
+    margin-bottom: 0; 
+    z-index: 2;
+    /* 🚀 OPCIONAL: Puedes añadir un margin-top si el texto necesita subir más */
+    /* margin-top: 50px; */ 
 }
 
 .hero-content h1 {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  color: #b3e0f2; /* Color para el título principal */
-  text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    /* ✅ Restaurar el tamaño de fuente original de 3.5rem (antes 4rem) */
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: #b3e0f2;
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
 }
 
 .hero-content p {
-  font-size: 1.4rem;
-  margin-bottom: 2.5rem;
-  color: #aebacd;
+    /* ✅ Restaurar el tamaño de fuente original de 1.4rem */
+    font-size: 1.4rem;
+    margin-bottom: 2.5rem;
+    color: #aebacd;
 }
 
 .btn-explorar {
-  background-color: #00bcd4;
-  color: #0d1117;
-  padding: 1rem 2.5rem;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+    background-color: #00bcd4;
+    color: #0d1117;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
 }
 
 .btn-explorar:hover {
-  background-color: #0097a7;
-  transform: translateY(-2px);
+    background-color: #0097a7;
+    transform: translateY(-2px);
 }
 
-/* Planeta Girando */
-.planet-container {
-  width: 250px; /* Tamaño del contenedor */
-  height: 250px;
-  perspective: 1000px; /* Profundidad para la rotación 3D */
-  margin-top: 3rem;
-  position: relative;
-}
-
-.planet {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #5d8eef, #3456b3 60%, #1a2b5e); /* Gradiente para el planeta */
-  box-shadow: inset 0 0 30px rgba(0,0,0,0.5), /* Sombras internas */
-              0 0 60px rgba(52, 86, 179, 0.8); /* Resplandor externo */
-  animation: rotatePlanet 15s linear infinite; /* Animación de rotación */
-  position: relative;
-  transform-style: preserve-3d; /* Esencial para el pseudo-elemento */
-}
-
-/* Animación del Planeta */
-@keyframes rotatePlanet {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
-}
-
-/* Añadir un "anillo" o "atmosfera" al planeta */
-.planet::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150%;
-    height: 15px; /* Grosor del anillo */
-    background: rgba(179, 224, 242, 0.3); /* Color semi-transparente */
-    border-radius: 50%;
-    transform: translate(-50%, -50%) rotateX(75deg) rotateY(20deg); /* Inclinar el anillo */
-    box-shadow: 0 0 15px rgba(179, 224, 242, 0.6);
-    z-index: -1; /* Detrás del planeta */
+/* ------------------------------------------- */
+/* 4. PLANETA 3D (react-globe.gl) */
+/* ------------------------------------------- */
+.planet-container, .planet-container-3d {
+    /* 🚀 CAMBIO CLAVE: Reduce el tamaño del planeta */
+    width: 400px; /* Puedes probar con 350px o incluso 300px */
+    height: 400px; /* Asegúrate de que coincida con el width para mantener la proporción */
+    /* ✅ Ajustamos flex-basis para balancear con el hero-content */
+    flex-basis: 40%; /* Si hero-content es 40%, puedes dejar este en 40% para que el resto sea espacio */
+    margin: 0; 
+    position: relative;
+    z-index: 1; 
+    background: none !important; 
+    /* 🚀 CAMBIO CLAVE: Sube el planeta */
+    margin-top: -50px; /* Ajusta este valor para subir o bajar el planeta */
+    /* Opcional: Si quieres control más fino, puedes usar transform */
+    /* transform: translateY(-50px); */
 }
 
 
-/* --- Media Queries para Responsive Design (Menú de Hamburguesa) --- */
+/* ------------------------------------------- */
+/* 5. MEDIA QUERIES (RESPONSIVE) */
+/* ------------------------------------------- */
+
+@media (max-width: 992px) {
+    .hero-section {
+        flex-direction: column; 
+        text-align: center; 
+        /* ✅ Restaurar padding más adecuado para tabletas */
+        padding: 5rem 2rem 4rem; /* Un padding de 2rem lateral para dispositivos medianos */
+        /* 🚀 CAMBIO CLAVE: Alinea todo el contenido arriba en responsive también */
+        align-items: flex-start; 
+    }
+    
+    .hero-content {
+        order: 1;
+        text-align: center;
+        margin-bottom: 3rem;
+        flex-basis: 100%;
+        /* 🚀 OPCIONAL: Restablece el margin-top para responsive si lo habías puesto antes */
+        /* margin-top: 0; */
+    }
+
+    .planet-container, .planet-container-3d {
+        order: 2;
+        /* ✅ Restaurar el tamaño del planeta que tenías en tablets (300px) o ajustarlo a 350px si lo prefieres */
+        width: 300px; /* O 350px si quieres que sea un poco más grande en tablets */
+        height: 300px; /* O 350px */
+        margin-bottom: 3rem;
+        /* 🚀 CAMBIO CLAVE: Restablece o ajusta el margin-top para responsive */
+        margin-top: 0; /* O ajusta a un valor positivo o negativo si quieres subirlo/bajarlo en tablet */
+    }
+}
+
 @media (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap; /* Permite que los elementos se envuelvan */
-  }
+    .navbar {
+        flex-wrap: wrap; 
+    }
+    
+    .navbar, .hero-section {
+        max-width: 100%; 
+    }
+    
+    /* Restaurar el padding estándar de la navbar en móvil */
+    .navbar {
+        padding: 1rem 2rem; 
+    }
 
-  .nav-links {
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-    background-color: rgba(17, 24, 39, 0.95);
-    position: absolute;
-    top: 100%; /* Debajo de la navbar */
-    left: 0;
-    padding: 1rem 0;
-    max-height: 0; /* Oculto por defecto */
-    overflow: hidden;
-    transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
-  }
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        background-color: rgba(17, 24, 39, 0.95);
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        padding: 0;
+        max-height: 0; 
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+    }
+    
+    .nav-links.active {
+        max-height: 300px; 
+        padding: 1rem 0;
+    }
 
-  .nav-links.active {
-    max-height: 300px; /* Muestra el menú cuando está activo */
-    padding: 1rem 0;
-  }
+    .nav-links li {
+        margin: 0.5rem 0;
+    }
 
-  .nav-links li {
-    margin: 0.5rem 0;
-  }
+    .menu-toggle {
+        display: block; 
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
 
-  .menu-toggle {
-    display: block; /* Muestra el botón de hamburguesa */
-  }
-
-  .hero-content h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero-content p {
-    font-size: 1.1rem;
-  }
-
-  .planet-container {
-    width: 200px;
-    height: 200px;
-  }
+    .hero-content p {
+        font-size: 1.1rem;
+    }
 }
 
-/* Opcional: Pequeña animación para la nube o el resplandor */
+/* ------------------------------------------- */
+/* 6. EFECTOS OPCIONALES */
+/* ------------------------------------------- */
 .bienvenida-container::before {
     content: '';
     position: absolute;
