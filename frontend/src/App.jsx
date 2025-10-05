@@ -1,84 +1,47 @@
-import {useState } from "react";
+import React, { useState } from 'react';
+import './index.css'; 
+import RotatingEarth from './RotatingEarth'; 
 
 function App() {
+  const [menuAbierto, setMenuAbierto] = useState(false); 
 
-  function App () {
-    const [pantalla, setPantalla] = useState("Inicio"); // control de pantalla
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
 
-    return (
-     < div 
-     style={{
-      fontFamily: 'Arial, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignContent: 'center',
-      height: '100vh',
-      backgroundColor: '#f0f4f8',
-      textAlign : 'center',
-     }}
-      >
+  return (
+    <div className="bienvenida-container">
+      {/* Barra de Navegación / Menú */}
+      <nav className="navbar">
+        <div className="navbar-brand">Check Now</div>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          {menuAbierto ? '✕' : '☰'} 
+        </button>
+        <ul className={`nav-links ${menuAbierto ? 'active' : ''}`}>
+          <li><a href="#inicio">Home</a></li>
+          <li><a href="#clima">weather</a></li>
+          <li><a href="#about">About us</a></li>
+          <li><a href="#contacto">Contact</a></li>
+        </ul>
+      </nav>
 
-        {pantalla === "Inicio" && (
-        <>
+      {/* Contenido Principal de Bienvenida */}
+      <header className="hero-section">
+        <div className="hero-content">
+          <h1>Explore your future now!</h1>
+          <p>Don't worry about whether it will rain at your next destination!</p>
+          <button className="btn-explorar">check the weather</button>
+        </div>
+        
+        <div className="planet-container"> 
+            <RotatingEarth /> 
+        </div>
 
-        <h1 style={{ fontSize: "4rem", marginBottom: "50px", color: "#4CAF50" }}> 
-          chweck-now
+      </header>
 
-           </h1>
-
-           <button
-
-            onClick={() => alert("Ir a incio de sesión")}
-            style={{
-              padding: "15px 30px",
-              fontSize: "1.5rem",
-              margin: "10px",
-              borderRadius: "8px",
-              border: "none",
-              backgroundColor: "#4CAF50",
-              color: "white",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            }}
-            >
-
-            Iniciar sesión
-            </button>
-
-            <button
-            onClick={() => alert("Ir  a crear cuenta")}
-            style={{
-              padding: "15px 30px",
-              fontSize: "1.5rem",
-              margin: "10px",
-              borderRadius: "8px",
-              border: "2px solid #4CAF50",
-              backgrounn: "white",
-              color: "#4CAF50",
-              cursor: "pointer",
-              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-
-            }}
-            > 
-
-            Crear cuenta  
-            </button>
-          </>  
-        )}
-      </div>
-    );
-  }
+      {/* ... */}
+    </div>
+  );
 }
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-  
+export default App;

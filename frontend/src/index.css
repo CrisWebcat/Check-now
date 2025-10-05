@@ -1,68 +1,253 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* ------------------------------------------- */
+/* 1. ESTILOS BASE Y FONDO ESPACIAL */
+/* ------------------------------------------- */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #0d1117; 
+    color: #e6edf3; 
+    overflow-x: hidden;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.bienvenida-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    background: radial-gradient(circle at top right, #1a2a3a, #0d1117 70%);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* ------------------------------------------- */
+/* 2. BARRA DE NAVEGACIÓN (NAVBAR) */
+/* ------------------------------------------- */
+.navbar {
+    width: 100%;
+    max-width: 1500px;
+    background-color: rgba(17, 24, 39, 0.8);
+    padding: 1rem 6rem; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #00bcd4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem; 
+}
+
+.nav-links li a {
+    color: #e6edf3;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: #00bcd4;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #e6edf3;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+/* ------------------------------------------- */
+/* 3. SECCIÓN HERO (CONTENIDO PRINCIPAL) - LAYOUT Y ALINEACIÓN */
+/* ------------------------------------------- */
+.hero-section {
+    text-align: left;
+    max-width: 1400px;
+    margin: 60px auto 0; 
+    flex-grow: 1; 
+    
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    
+    padding: 6rem 6rem 4rem; 
+    
+    min-height: calc(100vh - 60px);
+    width: 100%; 
+    position: relative;
+}
+
+.hero-content {
+    flex-basis: 40%;
+    text-align: left;
+    margin-bottom: 0; 
+    z-index: 2; 
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    color: #b3e0f2;
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+.hero-content p {
+    font-size: 1.4rem;
+    margin-bottom: 2.5rem;
+    color: #aebacd;
+}
+
+.btn-explorar {
+    background-color: #00bcd4;
+    color: #0d1117;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+}
+
+.btn-explorar:hover {
+    background-color: #0097a7;
+    transform: translateY(-2px);
+}
+/* ------------------------------------------- */
+/* 4. PLANETA 3D (react-globe.gl) - ESTILOS BASE DE FONDO */
+/* ------------------------------------------- */
+.planet-container, .planet-container-3d {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 150vw; 
+    height: 150vh; 
+    max-width: none;
+    max-height: none;
+    z-index: 0; 
+    flex-basis: auto; 
+    margin: 0; 
+    background: none !important; 
+}
+/* ------------------------------------------- */
+/* 5. MEDIA QUERIES (RESPONSIVE) 
+/* ------------------------------------------- */
+
+/* Tablet  */
+@media (max-width: 992px) {
+    .hero-section {
+        flex-direction: column; 
+        text-align: center; 
+        padding: 5rem 2rem 4rem;
+        align-items: flex-start; 
+    }
+    
+    .hero-content {
+        order: 1;
+        text-align: center;
+        margin-bottom: 3rem;
+        flex-basis: 100%;
+    }
+    .planet-container, .planet-container-3d {
+        width: 120vw;
+        height: 120vh;
+        transform: translate(-30%, -30%); 
+    }
+}
+
+/* Móvil */
+@media (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap; 
+        padding: 1rem 2rem; 
+    }
+    
+    .navbar, .hero-section {
+        max-width: 100%; 
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        background-color: rgba(17, 24, 39, 0.95);
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        padding: 0;
+        max-height: 0; 
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+    }
+    
+    .nav-links.active {
+        max-height: 300px; 
+        padding: 1rem 0;
+    }
+
+    .nav-links li {
+        margin: 0.5rem 0;
+    }
+
+    .menu-toggle {
+        display: block; 
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1.1rem;
+    }
+    .planet-container, .planet-container-3d {
+        width: 200vw;
+        height: 200vh;
+        transform: translate(-40%, 10%); 
+    }
+}
+
+/* ------------------------------------------- */
+/* 6. EFECTOS OPCIONALES */
+/* ------------------------------------------- */
+.bienvenida-container::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(30px);
+    animation: pulseGlow 8s infinite alternate ease-in-out;
+    z-index: 1;
+}
+
+@keyframes pulseGlow {
+    from { transform: scale(0.8); opacity: 0.6; }
+    to { transform: scale(1.2); opacity: 0.9; }
 }
