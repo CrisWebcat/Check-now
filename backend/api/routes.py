@@ -81,7 +81,7 @@ def risk(
         else:
             rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
             rain_prob = round((rainy_hours / total_hours) * 100, 1)
-            rain_message = f"Probabilidad aproximada de lluvia: {rain_prob}%"
+            rain_message = f"Approximate probability of rain: {rain_prob}%"
 
         return {
             "status": "success",
