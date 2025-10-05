@@ -4,6 +4,8 @@ from datetime import datetime
 from api.meteomatics import fetch_meteomatics_timeseries
 from geopy.geocoders import Nominatim
 from services.nasa_power import fetch_nasa_power
+from models.risk_model import compute_risk_probabilities
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -70,12 +72,18 @@ def risk(
     validate_date(date_query)
     try:
         timeseries = fetch_meteomatics_timeseries(lat, lon, date_query, date_query)
-        if "error" in timeseries:
-            raise HTTPException(status_code=502, detail=timeseries["error"])
-        return {"status": "success", "timeseries": timeseries}
+        
+        risks = compute_risk_probabilities(timeseries)
+        
+        return {
+            "status": "success",
+            "timeseries": timeseries,
+            "risks": risks
+        }
     except Exception as e:
         logger.error(f"Error en endpoint /risk: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/query")
 def query_weather(
