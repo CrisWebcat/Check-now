@@ -1,5 +1,5 @@
 import React from 'react';
-import './AboutUs.css'; // Assuming you have an external CSS file for the styles
+import './AboutUs.css'; 
 
 function AboutPage() {
   return (
@@ -17,8 +17,8 @@ function AboutPage() {
         <div className="mission-card">
           <h2>Our Mission: Predict and Empower</h2>
           <p>
-            At **Check Now**, we believe weather should be a guide, not an obstacle. Our project was born from the frustration of uncertain planning.
-            We provide clear weather predictions and, most importantly, **smart activity suggestions** based on the date and location you choose. Say goodbye to plans ruined by unexpected rain!
+            At Check Now , we believe weather should be a guide, not an obstacle. Our project was born from the frustration of uncertain planning.
+            We provide clear weather predictions and, most importantly,  Say goodbye to plans ruined by unexpected rain!
           </p>
           <span className="mission-icon">🗺️</span>
         </div>
@@ -26,22 +26,22 @@ function AboutPage() {
 
       {/* Philosophy Section - Card Style */}
       <section className="about-team-philosophy">
-        <h2>🌱 Our Philosophy</h2>
+        <h2>Our Mentality</h2>
         <div className="philosophy-grid">
           <div className="philosophy-item">
             <span className="icon">💡</span>
             <h3>Absolute Clarity</h3>
-            <p>Complex weather data presented simply for quick, confident decision-making.</p>
+            <p>Don't worry about complicated data due to the weather, we will explain it to you in the best way.</p>
           </div>
           <div className="philosophy-item">
             <span className="icon">🚀</span>
             <h3>Constant Innovation</h3>
-            <p>We use the best technology to ensure our activity recommendations are highly accurate and relevant.</p>
+            <p>We use technology so that no one worries about their outdoor activities and they know what is happening around us..</p>
           </div>
           <div className="philosophy-item">
             <span className="icon">🤝</span>
             <h3>User Focus</h3>
-            <p>Designed to make planning an adventure, a dinner, or a relaxing day a seamless experience.</p>
+            <p>Designed to make planning an adventure, a dinner, anextreme travel, agriculture or a relaxing day a seamless experience.</p>
           </div>
         </div>
       </section>
