@@ -1,55 +1,159 @@
-
-/* Contenedor principal: fila */
+/* Contenedor principal con fondo degradado y animación de aparición */
 .weather-page {
   display: flex;
-  flex-direction: row;
-  padding: 100px;
-  gap: 50px; /* separación entre columnas */
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 80px 20px 20px 20px; /* espacio superior para barra de ayuda */
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  opacity: 0;
+  animation: fadeInPage 1s ease forwards;
+  box-sizing: border-box;
 }
 
-/* Columna izquierda pegada al borde izquierdo */
+/* Animación de aparición: opaco → visible */
+@keyframes fadeInPage {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* PANEL DE ENTRADA DE DATOS */
 .weather-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* alineación al inicio (izquierda) */
-  gap: 25px; /* espacio entre cada grupo de input */
-  min-width: 150px; /* asegura espacio suficiente para los inputs */
+  flex: 1 1 300px;
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(6px);
+  min-width: 280px;
+  line-height: 1.8;
+  font-size: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Cada grupo de label + input */
+.weather-info:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* PANEL DEL MAPA */
+.weather-details {
+  flex: 2 1 600px;
+  min-width: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: 400px;
+  max-height: 50vh;
+}
+
+/* GRUPOS DE INPUTS */
 .input-group {
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
 }
 
 .input-group label {
-  font-size: 1.2rem;
-  font-weight: 500;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #222;
 }
 
 .input-group input {
-  padding: 8px 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 200px;
-}
-
-/* Columna derecha para detalles del clima */
-.weather-details {
-  flex: 1; /* ocupa el resto del espacio */
-  background-color: #fefefe;
-  padding: 20px;
-  border-radius: 20px;
-}
-
-
-/* WeatherPage.css */
-.leaflet-container {
+  padding: 12px;
+  font-size: 16px;
   width: 100%;
-  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
+.input-group input:focus {
+  border-color: #4facfe;
+  outline: none;
+  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
+}
 
+/* FILA DE FECHA Y BOTÓN */
+.input-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
 
+.show-btn {
+  padding: 12px 18px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.show-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* CUADRO DE RESULTADOS */
+.weather-result {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s ease;
+  opacity: 0;
+  animation: fadeInResult 1s ease forwards;
+  font-size: 110%;
+  line-height: 1.6;
+}
+
+@keyframes fadeInResult {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.weather-result h4 {
+  margin-bottom: 12px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+
+.weather-result p {
+  margin: 6px 0;
+  font-weight: 500;
+}
+
+/* Clase para resultados debajo del mapa */
+.below-map {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto 40px auto;
+}
+
+/* RESPONSIVO PARA MÓVILES */
+@media (max-width: 900px) {
+  .weather-page {
+    flex-direction: column;
+    padding: 100px 15px 15px 15px;
+  }
+  .weather-details {
+    height: 300px;
+  }
+  .input-row {
+    flex-direction: column;
+  }
+}
