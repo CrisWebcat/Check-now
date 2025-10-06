@@ -1,159 +1,178 @@
-/* Contenedor principal con fondo degradado y animación de aparición */
+/* --------------------------------------------------- */
+/* FONDO DECORADO Y ESTILOS GENERALES                  */
+/* --------------------------------------------------- */
+body {
+    /* Fondo degradado suave: De azul claro a morado claro */
+    background: linear-gradient(135deg, #e0f7fa 0%, #ede7f6 100%);
+    min-height: 100vh; 
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* --------------------------------------------------- */
+/* LAYOUT PRINCIPAL: USANDO CSS GRID PARA 2x2          */
+/* --------------------------------------------------- */
+
 .weather-page {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 80px 20px 20px 20px; /* espacio superior para barra de ayuda */
-  min-height: 100vh;
-  width: 100%;
-  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  opacity: 0;
-  animation: fadeInPage 1s ease forwards;
-  box-sizing: border-box;
+    display: grid;
+    /* Columna 1 (Inputs/Resultados): 1 parte | Columna 2 (Mapa): 3 partes */
+    grid-template-columns: 1fr 3fr; 
+    /* Fila 1 (Superior) | Fila 2 (Inferior) */
+    grid-template-rows: auto auto; 
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* Animación de aparición: opaco → visible */
-@keyframes fadeInPage {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+/* --------------------------------------------------- */
+/* POSICIONAMIENTO DE ELEMENTOS EN EL GRID             */
+/* --------------------------------------------------- */
 
-/* PANEL DE ENTRADA DE DATOS */
+/* 1. Recuadro de Inputs (Fila 1, Columna 1) */
 .weather-info {
-  flex: 1 1 300px;
-  max-width: 400px;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(6px);
-  min-width: 280px;
-  line-height: 1.8;
-  font-size: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    /* Fondo blanco ligeramente opaco para resaltar sobre el degradado */
+    background-color: rgba(255, 255, 255, 0.95); 
 }
 
-.weather-info:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-}
-
-/* PANEL DEL MAPA */
+/* 2. Mapa (Ocupa ambas filas, Columna 2) */
 .weather-details {
-  flex: 2 1 600px;
-  min-width: 300px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  width: 100%;
-  height: 400px;
-  max-height: 50vh;
+    grid-column: 2 / 3;
+    grid-row: 1 / 3; 
+    min-height: 500px; 
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* GRUPOS DE INPUTS */
+/* 3. Contenedor de Resultados/Actividades (Fila 2, Columna 1) */
+.results-activities-container {
+    grid-column: 1 / 2; 
+    grid-row: 2 / 3; 
+    
+    /* Usa Flexbox internamente para los dos recuadros (Datos y Recomendaciones) */
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+}
+
+/* --------------------------------------------------- */
+/* ESTILOS DE LOS RECUADROS INTERNOS Y CAMPOS DE ENTRADA */
+/* --------------------------------------------------- */
+
+/* Recuadros de resultados y recomendaciones (comparten estilo base) */
+.weather-result,
+.activity-recommendations {
+    /* Ambos recuadros ocuparán cerca de la mitad del espacio de la columna 1 */
+    flex: 1 1 calc(50% - 10px); 
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    font-size: 100%;
+    line-height: 1.6;
+    transition: all 0.5s ease;
+}
+
+.weather-result {
+    background-color: rgba(255, 255, 255, 0.92);
+}
+
+.activity-recommendations {
+    background-color: rgba(230, 242, 255, 0.95); /* Azul muy suave */
+}
+
+.activity-recommendations h4,
+.weather-result h4 {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+    color: #007bff; /* Color azul para los títulos */
+}
+
+/* Estilos de inputs */
 .input-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 15px;
 }
 
-.input-group label {
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #222;
+.weather-info input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
 }
 
-.input-group input {
-  padding: 12px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-.input-group input:focus {
-  border-color: #4facfe;
-  outline: none;
-  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
-}
-
-/* FILA DE FECHA Y BOTÓN */
 .input-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.date-input {
+    flex-grow: 1;
 }
 
 .show-btn {
-  padding: 12px 18px;
-  cursor: pointer;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  transition: all 0.3s ease;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
 }
 
 .show-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #0056b3;
 }
 
-/* CUADRO DE RESULTADOS */
-.weather-result {
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  transition: all 0.5s ease;
-  opacity: 0;
-  animation: fadeInResult 1s ease forwards;
-  font-size: 110%;
-  line-height: 1.6;
-}
+/* --------------------------------------------------- */
+/* RESPONSIVO (Ajuste para pantallas pequeñas)         */
+/* --------------------------------------------------- */
 
-@keyframes fadeInResult {
-  0% { opacity: 0; transform: translateY(15px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.weather-result h4 {
-  margin-bottom: 12px;
-  color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 6px;
-}
-
-.weather-result p {
-  margin: 6px 0;
-  font-weight: 500;
-}
-
-/* Clase para resultados debajo del mapa */
-.below-map {
-  width: 100%;
-  max-width: 900px;
-  margin: 20px auto 40px auto;
-}
-
-/* RESPONSIVO PARA MÓVILES */
 @media (max-width: 900px) {
-  .weather-page {
-    flex-direction: column;
-    padding: 100px 15px 15px 15px;
-  }
-  .weather-details {
-    height: 300px;
-  }
-  .input-row {
-    flex-direction: column;
-  }
+    .weather-page {
+        grid-template-columns: 1fr; /* Una sola columna */
+        grid-template-rows: auto auto auto; 
+        max-width: 100%;
+        padding: 10px;
+    }
+    
+    .weather-info {
+        grid-row: 1 / 2;
+    }
+
+    .weather-details {
+        grid-row: 2 / 3; 
+        min-height: 300px;
+    }
+    
+    .results-activities-container {
+        grid-row: 3 / 4; 
+        flex-direction: column; /* Apila verticalmente en móvil */
+    }
+    
+    /* Asegura que los recuadros internos ocupen todo el ancho en móvil */
+    .weather-result,
+    .activity-recommendations {
+        flex: 1 1 100%;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .show-btn {
+        width: 100%;
+    }
 }

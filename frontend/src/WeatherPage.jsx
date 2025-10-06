@@ -4,6 +4,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "re
 import L from "leaflet";
 import "./WeatherPage.css";
 
+// ------------------------------------
+// Componentes Auxiliares para Leaflet
+// ------------------------------------
 const markerIcon = new L.Icon({
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
   iconSize: [25, 41],
@@ -27,6 +30,9 @@ const MapClickHandler = ({ onSelect }) => {
   return null;
 };
 
+// ------------------------------------
+// Componente Principal
+// ------------------------------------
 const WeatherPage = () => {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [country, setCountry] = useState("");
@@ -36,13 +42,16 @@ const WeatherPage = () => {
   const [weatherData, setWeatherData] = useState({});
   const resultRef = useRef(null);
 
+  // Lógica de animación inicial (puedes adaptarla o quitarla si no la necesitas)
   useEffect(() => {
     const container = document.querySelector(".weather-page");
-    container.classList.add("blurred");
-    setTimeout(() => {
-      container.classList.remove("blurred");
-      container.classList.add("fade-in");
-    }, 100);
+    if (container) {
+      container.classList.add("blurred");
+      setTimeout(() => {
+        container.classList.remove("blurred");
+        container.classList.add("fade-in");
+      }, 100);
+    }
   }, []);
 
   const currentYear = new Date().getFullYear();
@@ -86,6 +95,7 @@ const WeatherPage = () => {
         ? "http://localhost:5000/query"
         : "http://localhost:5000/query_nasa";
 
+      // Nota: Esta es una URL local de ejemplo y debe ser adaptada a tu backend real.
       const weatherResponse = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -101,7 +111,7 @@ const WeatherPage = () => {
       setWeatherData(weather);
 
       setTimeout(() => {
-        resultRef.current.scrollIntoView({ behavior: "smooth" });
+        resultRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 200);
 
     } catch (error) {
@@ -110,9 +120,39 @@ const WeatherPage = () => {
     }
   };
 
+  // Función para recomendaciones según clima
+  const getActivityRecommendations = () => {
+    if (!weatherData.temperature && !weatherData.precipitation && !weatherData.wind) return ["Search for a location and time to get activity recommendations."];
+
+    const recs = [];
+    const temp = weatherData.temperature;
+    const rain = weatherData.precipitation;
+    const wind = weatherData.wind;
+
+    if (temp) {
+        if (temp > 28) recs.push("☀️ **Caluroso:** Natación, deportes acuáticos, o actividades interiores con aire acondicionado.");
+        else if (temp >= 18 && temp <= 28) recs.push("🚶‍♀️ **Agradable:** Senderismo, ciclismo, o picnic. ¡Perfecto para exteriores!");
+        else if (temp < 18) recs.push("🧣 **Frío:** Visita un museo, una galería o disfruta de una película en casa.");
+    }
+    
+    if (rain && rain > 0) recs.push("☔ **Lluvia:** Juegos de mesa, lectura, o visita un centro comercial.");
+    
+    if (wind && wind > 25) recs.push("🌬️ **Viento Fuerte:** Evita actividades elevadas. ¡Ideal para interiores!");
+    else if (wind && wind > 10) recs.push("🪁 **Viento Moderado:** Volar una cometa o hacer vela ligera.");
+    
+    if (Object.keys(weatherData).length > 0 && !recs.length) recs.push("Datos disponibles, pero no hay una recomendación específica para este clima.");
+    
+    return recs;
+  };
+
+  const recommendations = getActivityRecommendations();
+
   return (
     <div className="weather-page">
-      {/* PANEL IZQUIERDO */}
+      
+      {/* ----------------------------------------------------------------- */}
+      {/* 1. INPUTS Y CONTROLES (Columna 1, Fila 1)                         */}
+      {/* ----------------------------------------------------------------- */}
       <div className="weather-info">
         <div className="input-group">
           <label>Country</label>
@@ -142,7 +182,9 @@ const WeatherPage = () => {
         </div>
       </div>
 
-      {/* PANEL DERECHO - MAPA */}
+      {/* ----------------------------------------------------------------- */}
+      {/* 2. MAPA (Columna 2, Ocupa las dos Filas)                          */}
+      {/* ----------------------------------------------------------------- */}
       <div className="weather-details">
         <MapContainer
           center={[15.7835, -90.2308]}
@@ -170,14 +212,30 @@ const WeatherPage = () => {
         </MapContainer>
       </div>
 
-      {/* CUADRO DE RESULTADOS SIEMPRE VISIBLE */}
-      <div className="weather-result below-map" ref={resultRef}>
-        <h4>Weather Data</h4>
-        <p>Temperature: {weatherData.temperature || "--"}</p>
-        <p>Precipitation: {weatherData.precipitation || "--"}</p>
-        <p>Wind: {weatherData.wind || "--"}</p>
-        <p>Solar Radiation: {weatherData.solarRadiation || "--"}</p>
+      {/* ----------------------------------------------------------------- */}
+      {/* 3. CONTENEDOR INFERIOR (Columna 1, Fila 2)                        */}
+      {/* ----------------------------------------------------------------- */}
+      <div className="results-activities-container">
+          
+          {/* RECUADRO INFERIOR IZQUIERDO: DATOS CLIMÁTICOS */}
+          <div className="weather-result" ref={resultRef}>
+            <h4>🌡️ Weather Data</h4>
+            <p>Temperature: {weatherData.temperature || "--"}</p>
+            <p>Precipitation: {weatherData.precipitation || "--"}</p>
+            <p>Wind: {weatherData.wind || "--"}</p>
+            <p>Solar Radiation: {weatherData.solarRadiation || "--"}</p>
+          </div>
+
+          {/* RECUADRO INFERIOR DERECHO: RECOMENDACIONES DE ACTIVIDADES */}
+          <div className="activity-recommendations">
+            <h4>💡 Activity Recommendations</h4>
+            {recommendations.map((rec, idx) => (
+              <p key={idx}>{rec}</p>
+            ))}
+          </div>
+          
       </div>
+
     </div>
   );
 };
