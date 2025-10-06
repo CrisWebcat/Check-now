@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.routes import router as api_router
 import logging
 import os # Necesario para usar getenv
-from dotenv import load_dotenv # <--- ¡NUEVO IMPORTANTE!
+from dotenv import load_dotenv 
 
 # -----------------------------------------------------------
 # Esto DEBE ejecutarse antes de cualquier código que intente leer las variables.

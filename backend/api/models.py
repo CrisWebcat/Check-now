@@ -1,4 +1,3 @@
-# api/models.py (Crear este archivo)
 
 from pydantic import BaseModel
 from typing import Optional

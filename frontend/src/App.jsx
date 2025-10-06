@@ -4,9 +4,9 @@ import './index.css';
 import RotatingEarth from './RotatingEarth';
 import WeatherPage from './WeatherPage';
 import AboutPage from './AboutPage';
-// ============================================
-//  Componente para la vista principal (Home)
-// ============================================
+// ===========================================
+//  Componente para la vista principal
+// ===========================================
 const HomeHero = () => (
   <header className="hero-section">
     <div className="hero-content">
