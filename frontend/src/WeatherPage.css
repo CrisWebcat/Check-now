@@ -1,5 +1,5 @@
 /* --------------------------------------------------- */
-/* FONDO DECORADO Y ESTILOS GENERALES                  */
+/* FONDO DECORADO Y ESTILOS GENERALES                  */
 /* --------------------------------------------------- */
 body {
     /* Fondo degradado suave: De azul claro a morado claro */
@@ -21,13 +21,17 @@ body {
     /* Fila 1 (Superior) | Fila 2 (Inferior) */
     grid-template-rows: auto auto; 
     gap: 20px;
-    padding: 20px;
+    
+    /* MODIFICACIÓN CLAVE: Aumenta el padding superior a 80px */
+    /* Esto empuja todo el contenido hacia abajo para que no sea cubierto por la barra superior. */
+    padding: 80px 20px 20px 20px;
+    
     max-width: 1400px;
     margin: 0 auto;
 }
 
 /* --------------------------------------------------- */
-/* POSICIONAMIENTO DE ELEMENTOS EN EL GRID             */
+/* POSICIONAMIENTO DE ELEMENTOS EN EL GRID             */
 /* --------------------------------------------------- */
 
 /* 1. Recuadro de Inputs (Fila 1, Columna 1) */
@@ -37,7 +41,7 @@ body {
     padding: 20px;
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    /* Fondo blanco ligeramente opaco para resaltar sobre el degradado */
+    /* Fondo ligeramente opaco para resaltar sobre el degradado */
     background-color: rgba(255, 255, 255, 0.95); 
 }
 
@@ -64,10 +68,9 @@ body {
 }
 
 /* --------------------------------------------------- */
-/* ESTILOS DE LOS RECUADROS INTERNOS Y CAMPOS DE ENTRADA */
+/* ESTILOS DE LOS RECUADROS INTERNOS                   */
 /* --------------------------------------------------- */
 
-/* Recuadros de resultados y recomendaciones (comparten estilo base) */
 .weather-result,
 .activity-recommendations {
     /* Ambos recuadros ocuparán cerca de la mitad del espacio de la columna 1 */
@@ -93,7 +96,7 @@ body {
     margin-bottom: 12px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 6px;
-    color: #007bff; /* Color azul para los títulos */
+    color: #007bff;
 }
 
 /* Estilos de inputs */
@@ -136,15 +139,16 @@ body {
 }
 
 /* --------------------------------------------------- */
-/* RESPONSIVO (Ajuste para pantallas pequeñas)         */
+/* RESPONSIVO (Ajuste para pantallas pequeñas)         */
 /* --------------------------------------------------- */
 
 @media (max-width: 900px) {
     .weather-page {
-        grid-template-columns: 1fr; /* Una sola columna */
+        grid-template-columns: 1fr;
         grid-template-rows: auto auto auto; 
         max-width: 100%;
-        padding: 10px;
+        /* Mantener el padding superior para el header */
+        padding: 80px 10px 10px 10px; 
     }
     
     .weather-info {
@@ -158,10 +162,9 @@ body {
     
     .results-activities-container {
         grid-row: 3 / 4; 
-        flex-direction: column; /* Apila verticalmente en móvil */
+        flex-direction: column;
     }
     
-    /* Asegura que los recuadros internos ocupen todo el ancho en móvil */
     .weather-result,
     .activity-recommendations {
         flex: 1 1 100%;

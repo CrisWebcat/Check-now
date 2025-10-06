@@ -42,18 +42,7 @@ const WeatherPage = () => {
   const [weatherData, setWeatherData] = useState({});
   const resultRef = useRef(null);
 
-  // Lógica de animación inicial (puedes adaptarla o quitarla si no la necesitas)
-  useEffect(() => {
-    const container = document.querySelector(".weather-page");
-    if (container) {
-      container.classList.add("blurred");
-      setTimeout(() => {
-        container.classList.remove("blurred");
-        container.classList.add("fade-in");
-      }, 100);
-    }
-  }, []);
-
+  // Lógica de validación de fechas y búsqueda de ubicación/clima (conservada y centralizada)
   const currentYear = new Date().getFullYear();
   const minYear = currentYear - 40;
   const maxYear = currentYear + 5;
@@ -129,6 +118,7 @@ const WeatherPage = () => {
     const rain = weatherData.precipitation;
     const wind = weatherData.wind;
 
+    // Lógica de recomendación
     if (temp) {
         if (temp > 28) recs.push("☀️ **Caluroso:** Natación, deportes acuáticos, o actividades interiores con aire acondicionado.");
         else if (temp >= 18 && temp <= 28) recs.push("🚶‍♀️ **Agradable:** Senderismo, ciclismo, o picnic. ¡Perfecto para exteriores!");
@@ -213,7 +203,7 @@ const WeatherPage = () => {
       </div>
 
       {/* ----------------------------------------------------------------- */}
-      {/* 3. CONTENEDOR INFERIOR (Columna 1, Fila 2)                        */}
+      {/* 3. CONTENEDOR INFERIOR (Columna 1, Fila 2) - Datos y Recomendaciones */}
       {/* ----------------------------------------------------------------- */}
       <div className="results-activities-container">
           
