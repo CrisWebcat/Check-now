@@ -4,7 +4,6 @@ import './index.css';
 import RotatingEarth from './RotatingEarth';
 import WeatherPage from './WeatherPage';
 import AboutPage from './AboutPage';
-import HelpPage from './HelpPage'; 
 // ============================================
 //  Componente para la vista principal (Home)
 // ============================================
@@ -64,7 +63,6 @@ function App() {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/weather">Weather</Link></li>
             <li><Link to="/about">About us</Link></li>
-            <li><Link to="/Help">Help</Link></li>
             {/* */}
           </ul>
         </nav>
@@ -82,9 +80,6 @@ function App() {
           {/* Página "Acerca de" */}
           <Route path="/about" element={<AboutPage />} />
 
-          {/* Página de ayuda */}
-          {/* Ahora <HelpPage /> está definido gracias a la importación corregida */}
-          <Route path="/help" element={<HelpPage />} />
 
           {/* Ruta por defecto si no se encuentra la dirección */}
           <Route
