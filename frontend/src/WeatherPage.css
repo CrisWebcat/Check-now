@@ -1,0 +1,55 @@
+
+/* Contenedor principal: fila */
+.weather-page {
+  display: flex;
+  flex-direction: row;
+  padding: 100px;
+  gap: 50px; /* separación entre columnas */
+}
+
+/* Columna izquierda pegada al borde izquierdo */
+.weather-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* alineación al inicio (izquierda) */
+  gap: 25px; /* espacio entre cada grupo de input */
+  min-width: 150px; /* asegura espacio suficiente para los inputs */
+}
+
+/* Cada grupo de label + input */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group label {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.input-group input {
+  padding: 8px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+}
+
+/* Columna derecha para detalles del clima */
+.weather-details {
+  flex: 1; /* ocupa el resto del espacio */
+  background-color: #fefefe;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+
+/* WeatherPage.css */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+
+
