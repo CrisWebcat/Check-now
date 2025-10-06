@@ -22,8 +22,7 @@ body {
     grid-template-rows: auto auto; 
     gap: 20px;
     
-    /* MODIFICACIÓN CLAVE: Aumenta el padding superior a 80px */
-    /* Esto empuja todo el contenido hacia abajo para que no sea cubierto por la barra superior. */
+    /* Padding superior para evitar que la barra de navegación tape el contenido */
     padding: 80px 20px 20px 20px;
     
     max-width: 1400px;
@@ -41,7 +40,7 @@ body {
     padding: 20px;
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    /* Fondo ligeramente opaco para resaltar sobre el degradado */
+    /* Fondo ligeramente opaco */
     background-color: rgba(255, 255, 255, 0.95); 
 }
 
@@ -60,7 +59,7 @@ body {
     grid-column: 1 / 2; 
     grid-row: 2 / 3; 
     
-    /* Usa Flexbox internamente para los dos recuadros (Datos y Recomendaciones) */
+    /* Usa Flexbox internamente para los dos recuadros */
     display: flex;
     gap: 20px;
     flex-wrap: wrap; 
@@ -73,7 +72,6 @@ body {
 
 .weather-result,
 .activity-recommendations {
-    /* Ambos recuadros ocuparán cerca de la mitad del espacio de la columna 1 */
     flex: 1 1 calc(50% - 10px); 
     padding: 20px;
     border-radius: 16px;
@@ -147,7 +145,6 @@ body {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto; 
         max-width: 100%;
-        /* Mantener el padding superior para el header */
         padding: 80px 10px 10px 10px; 
     }
     

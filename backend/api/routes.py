@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
-from datetime import datetime
-from api.meteomatics import fetch_meteomatics_timeseries
+from datetime import datetime, date
+from api.meteomatics import fetch_meteomatics_timeseries # Asegúrate de que esta función exista
 from geopy.geocoders import Nominatim
-from services.nasa_power import fetch_nasa_power
+from services.nasa_power import fetch_nasa_power # Asegúrate de que esta función exista
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,176 +11,183 @@ router = APIRouter()
 
 geolocator = Nominatim(user_agent="check_now_app")
 
-# ---------- VALIDACIONES ----------
+# ---------- VALIDACIONES Y UTILS ----------
 
-def validate_date(date_str: str):
+def validate_date_input(date_str: str):
+    """Valida y convierte una cadena YYYY-MM-DD o YYYY-MM-DDT... a objeto datetime."""
     try:
-        return datetime.strptime(date_str, "%Y-%m-%d")
+        # Intenta parsear como datetime completo (con hora)
+        return datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
     except ValueError:
-        raise HTTPException(status_code=400, detail=f"Fecha inválida: {date_str}, usar YYYY-MM-DD")
+        try:
+            # Si falla, intenta parsear solo la fecha
+            return datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail=f"Fecha/Hora inválida: {date_str}. Usar YYYY-MM-DDTmm:ss o YYYY-MM-DD")
 
 def validate_lat_lon(lat: float, lon: float):
     if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
         raise HTTPException(status_code=400, detail=f"Lat/Lon fuera de rango: lat={lat}, lon={lon}")
 
-def get_lat_lon_from_country(country_name: str):
-    location = geolocator.geocode(country_name)
+def get_lat_lon_from_location(country: Optional[str], city: Optional[str], locality: Optional[str]):
+    """Obtiene Lat/Lon usando Nominatim basado en los campos disponibles."""
+    query_parts = [p for p in [locality, city, country] if p]
+    if not query_parts:
+        raise HTTPException(status_code=400, detail="Debe proporcionar coordenadas o al menos un campo de ubicación.")
+    
+    query = ", ".join(query_parts)
+    location = geolocator.geocode(query, timeout=10)
+    
     if not location:
-        raise HTTPException(status_code=404, detail=f"No se encontró país: {country_name}")
+        raise HTTPException(status_code=404, detail=f"No se encontró la ubicación: {query}")
+        
     return location.latitude, location.longitude
 
-# ---------- ENDPOINTS ----------
-@router.get("/")
-def root():
-    return {"message": "Welcome to Check-now API"}
+def calculate_rain_prediction(data: dict) -> str:
+    """Calcula una probabilidad simple de lluvia para el día."""
+    precip_data = data.get("precip_1h:mm", [])
+    total_hours = len(precip_data)
+    if total_hours == 0:
+        return "No hay datos de precipitación disponibles"
+    else:
+        # Cuenta horas con precipitación significativa
+        rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
+        rain_prob = round((rainy_hours / total_hours) * 100, 1)
+        return f"Probabilidad aproximada de lluvia: {rain_prob}%"
 
-@router.get("/health")
-def health():
-    return {"status": "ok"}
-
-@router.get("/weather")
-def weather(
-    lat: float = Query(..., description="Latitud en grados decimales"),
-    lon: float = Query(..., description="Longitud en grados decimales"),
-    start: str = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
-    end: str = Query(..., description="Fecha de fin (YYYY-MM-DD)")
-):
-    validate_lat_lon(lat, lon)
-    start_dt = validate_date(start)
-    end_dt = validate_date(end)
-    if start_dt > end_dt:
-        raise HTTPException(status_code=400, detail="start no puede ser mayor que end")
-
-    try:
-        data = fetch_meteomatics_timeseries(lat, lon, start, end)
-        if "error" in data:
-            raise HTTPException(status_code=502, detail=data["error"])
-        return {"status": "success", "data": data}
-    except Exception as e:
-        logger.error(f"Error en endpoint /weather: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/risk")
-def risk(
-    lat: float = Query(..., description="Latitud"),
-    lon: float = Query(..., description="Longitud"),
-    date_query: str = Query(..., description="Fecha de consulta (YYYY-MM-DD)")
-):
-    validate_lat_lon(lat, lon)
-    validate_date(date_query)
+def format_weather_response(data: dict, rain_prediction: str) -> dict:
+    """Extrae y formatea los valores clave de los datos de Meteomatics (pronóstico)."""
     
-    try:
-        timeseries = fetch_meteomatics_timeseries(lat, lon, date_query, date_query)
+    # Intenta obtener el valor de la temperatura, precipitación, etc., para la primera hora
+    def get_first_value(key):
+        values = data.get(key, [])
+        return values[0]['value'] if values and values[0].get('value') is not None else None
 
-        # Predicción simple de lluvia
-        precip_data = timeseries.get("precip_1h:mm", [])
-        total_hours = len(precip_data)
-        if total_hours == 0:
-            rain_prob = None
-            rain_message = "No hay datos de precipitación disponibles"
-        else:
-            rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
-            rain_prob = round((rainy_hours / total_hours) * 100, 1)
-            rain_message = f"Approximate probability of rain: {rain_prob}%"
+    temp = get_first_value("t_2m:C")
+    precip = get_first_value("precip_1h:mm")
+    wind = get_first_value("wind_speed_10m:ms")
+    solar = get_first_value("global_rad:wm2")
 
-        return {
-            "status": "success",
-            "timeseries": timeseries,
-            "rain_prediction": rain_message
-        }
+    return {
+        "temperature": f"{temp}°C" if temp is not None else "--",
+        "precipitation": f"{precip} mm" if precip is not None else "--",
+        "wind": f"{wind} m/s" if wind is not None else "--",
+        "solarRadiation": f"{solar} W/m²" if solar is not None else "--",
+        "rain_prediction": rain_prediction,
+        "raw_data": data # Opcional: para el debug
+    }
 
-    except Exception as e:
-        logger.error(f"Error en endpoint /risk: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+def format_nasa_response(data: dict) -> dict:
+    """Extrae y formatea los valores clave de los datos de NASA POWER (histórico)."""
+    
+    props = data.get("properties", {})
+    parameter = props.get("parameter", {})
+    
+    # Promedios del día consultado (solo si la consulta es de un día)
+    temp = parameter.get("T2M", {}).get("20240101") # Asume que solo se consulta 1 día
+    precip = parameter.get("PRECTOT", {}).get("20240101")
+    solar = parameter.get("ALLSKY_SFC_SW_DWN", {}).get("20240101")
+    
+    # NASA no da viento directamente en el set de parámetros simples
+    wind = None 
 
-@router.get("/query")
-def query_weather(
-    country: str = Query(..., description="Nombre del país"),
-    start: str = Query(..., description="Fecha de inicio (YYYY-MM-DD)"),
-    end: str = Query(..., description="Fecha de fin (YYYY-MM-DD)")
+    # Se necesita adaptar la extracción de datos al formato real que devuelve NASA POWER
+    # (El formato de ejemplo "20240101" es una suposición, debe coincidir con el código de servicios/nasa_power.py)
+    
+    return {
+        "temperature": f"{temp}°C" if temp is not None else "--",
+        "precipitation": f"{precip} mm" if precip is not None else "--",
+        "wind": f"N/A" if wind is None else f"{wind} m/s", 
+        "solarRadiation": f"{solar} W/m²" if solar is not None else "--",
+        "rain_prediction": "Datos históricos no incluyen predicción de lluvia.",
+        "raw_data": data
+    }
+
+
+# ---------- ENDPOINTS UNIFICADOS ----------
+
+@router.post("/query_weather")
+async def query_weather(
+    # Lat/Lon son opcionales, si se usan, tienen prioridad
+    lat: Optional[float] = None,
+    lon: Optional[float] = None,
+    # Los nombres de ubicación son opcionales
+    country: Optional[str] = None,
+    city: Optional[str] = None,
+    locality: Optional[str] = None,
+    # Fecha/hora (requerida)
+    dateTime: str = Query(..., description="Fecha y hora (YYYY-MM-DDTmm:ss)")
 ):
-    # Validación de fechas
-    start_dt = validate_date(start)
-    end_dt = validate_date(end)
-    if start_dt > end_dt:
-        raise HTTPException(status_code=400, detail="start no puede ser mayor que end")
-
-    try:
-        # Obtener latitud y longitud desde el país
-        lat, lon = get_lat_lon_from_country(country)
-
-        # Llamada a Meteomatics
-        data = fetch_meteomatics_timeseries(lat, lon, start, end)
-
-        # Validación robusta para evitar el error 'str' object has no attribute get
-        if not isinstance(data, dict) or "error" in data:
-            logger.error(f"Error desde Meteomatics: {data}")
-            raise HTTPException(
-                status_code=502,
-                detail=f"Error desde Meteomatics: {data.get('error', str(data))}"
+    
+    # 1. DETERMINAR LAT/LON
+    if lat is None or lon is None:
+        lat_final, lon_final = get_lat_lon_from_location(country, city, locality)
+    else:
+        validate_lat_lon(lat, lon)
+        lat_final, lon_final = lat, lon
+        
+    # 2. VALIDAR FECHA
+    query_dt = validate_date_input(dateTime)
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    # Para la consulta de datos (la API de Meteomatics requiere solo la fecha)
+    query_date_str = query_dt.strftime("%Y-%m-%d")
+    
+    # 3. ESCOGER LA API (Futuro/Presente vs. Histórico)
+    is_future = query_dt.date() >= today.date()
+    
+    if is_future:
+        # A. Datos de PRONÓSTICO (Meteomatics)
+        try:
+            # Buscamos datos solo para el día y hora especificados
+            data = fetch_meteomatics_timeseries(
+                lat_final, 
+                lon_final, 
+                query_date_str, 
+                query_date_str,
+                interval="PT1H" # Intervalo horario para obtener datos cercanos a la hora
             )
 
-        # --- Cálculo simple de probabilidad de lluvia ---
-        precip_data = data.get("precip_1h:mm", [])
-        total_hours = len(precip_data)
-        if total_hours == 0:
-            rain_prob = None
-            rain_message = "No hay datos de precipitación disponibles"
-        else:
-            rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
-            rain_prob = round((rainy_hours / total_hours) * 100, 1)
-            rain_message = f"Probabilidad aproximada de lluvia: {rain_prob}%"
+            if not isinstance(data, dict) or "error" in data:
+                 raise HTTPException(status_code=502, detail=f"Error desde Meteomatics: {data.get('error', str(data))}")
 
-        # Respuesta final
-        return {
-            "status": "success",
-            "country": country,
-            "lat": lat,
-            "lon": lon,
-            "data": data,
-            "rain_prediction": rain_message
-        }
+            rain_prediction = calculate_rain_prediction(data)
+            
+            # Formateamos solo el punto de tiempo más cercano a la hora
+            return {
+                "status": "success", 
+                "source": "Meteomatics", 
+                "location": {"lat": lat_final, "lon": lon_final},
+                **format_weather_response(data, rain_prediction)
+            }
 
-    except HTTPException:
-        raise  # Reenvía errores de FastAPI
-    except Exception as e:
-        logger.error(f"Error en endpoint /query: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error en query endpoint: {str(e)}"
-        )
+        except Exception as e:
+            logger.error(f"Error en query_weather (Meteomatics): {e}")
+            raise HTTPException(status_code=500, detail=f"Error al obtener pronóstico: {str(e)}")
 
-@router.get("/nasa")
-def get_nasa_weather(
-    lat: float = Query(..., description="Latitud"),
-    lon: float = Query(..., description="Longitud"),
-    start: str = Query(..., description="Fecha inicio YYYY-MM-DD"),
-    end: str = Query(..., description="Fecha fin YYYY-MM-DD"),
-    community: str = Query("AG", description="Comunidad NASA POWER, default AG")
-):
-    try:
-        if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
-            raise HTTPException(status_code=400, detail="Latitud o longitud fuera de rango")
+    else:
+        # B. Datos HISTÓRICOS (NASA POWER)
+        try:
+            # NASA POWER requiere solo la fecha de inicio/fin
+            nasa_data = fetch_nasa_power(
+                lat_final, 
+                lon_final, 
+                query_date_str, 
+                query_date_str,
+                parameters="T2M,PRECTOT,ALLSKY_SFC_SW_DWN", 
+                community="AG"
+            )
+            
+            if "errors" in nasa_data or not nasa_data.get("properties"):
+                raise HTTPException(status_code=502, detail="NASA POWER devolvió error o datos vacíos")
 
-        start_dt = datetime.strptime(start, "%Y-%m-%d")
-        end_dt = datetime.strptime(end, "%Y-%m-%d")
-        if start_dt > end_dt:
-            raise HTTPException(status_code=400, detail="start no puede ser mayor que end")
-
-        today = datetime.today()
-        if start_dt > today or end_dt > today:
-            return {"status": "warning", "message": "NASA POWER no tiene datos para fechas futuras"}
-
-        params = "T2M,PRECTOT,ALLSKY_SFC_SW_DWN"
-        data = fetch_nasa_power(lat, lon, start, end, parameters=params, community=community)
-
-        if "errors" in data or not data.get("properties"):
-            raise HTTPException(status_code=502, detail="NASA POWER devolvió error o datos vacíos")
-
-        return {"status": "success", "source": "NASA POWER", "data": data}
-
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        logger.error(f"Error fetching NASA POWER data: {e}")
-        raise HTTPException(status_code=500, detail=f"Error fetching NASA POWER data: {e}")
+            return {
+                "status": "success", 
+                "source": "NASA POWER",
+                "location": {"lat": lat_final, "lon": lon_final},
+                **format_nasa_response(nasa_data)
+            }
+            
+        except Exception as e:
+            logger.error(f"Error en query_weather (NASA): {e}")
+            raise HTTPException(status_code=500, detail=f"Error al obtener datos históricos: {str(e)}")
