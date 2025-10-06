@@ -4,8 +4,6 @@ from datetime import datetime
 from api.meteomatics import fetch_meteomatics_timeseries
 from geopy.geocoders import Nominatim
 from services.nasa_power import fetch_nasa_power
-from models.risk_model import compute_risk_probabilities
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -70,20 +68,30 @@ def risk(
 ):
     validate_lat_lon(lat, lon)
     validate_date(date_query)
+    
     try:
         timeseries = fetch_meteomatics_timeseries(lat, lon, date_query, date_query)
-        
-        risks = compute_risk_probabilities(timeseries)
-        
+
+        # Predicción simple de lluvia
+        precip_data = timeseries.get("precip_1h:mm", [])
+        total_hours = len(precip_data)
+        if total_hours == 0:
+            rain_prob = None
+            rain_message = "No hay datos de precipitación disponibles"
+        else:
+            rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
+            rain_prob = round((rainy_hours / total_hours) * 100, 1)
+            rain_message = f"Approximate probability of rain: {rain_prob}%"
+
         return {
             "status": "success",
             "timeseries": timeseries,
-            "risks": risks
+            "rain_prediction": rain_message
         }
+
     except Exception as e:
         logger.error(f"Error en endpoint /risk: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.get("/query")
 def query_weather(
@@ -104,7 +112,7 @@ def query_weather(
         # Llamada a Meteomatics
         data = fetch_meteomatics_timeseries(lat, lon, start, end)
 
-        # ✅ Validación robusta para evitar el error 'str' object has no attribute get
+        # Validación robusta para evitar el error 'str' object has no attribute get
         if not isinstance(data, dict) or "error" in data:
             logger.error(f"Error desde Meteomatics: {data}")
             raise HTTPException(
@@ -112,13 +120,25 @@ def query_weather(
                 detail=f"Error desde Meteomatics: {data.get('error', str(data))}"
             )
 
+        # --- Cálculo simple de probabilidad de lluvia ---
+        precip_data = data.get("precip_1h:mm", [])
+        total_hours = len(precip_data)
+        if total_hours == 0:
+            rain_prob = None
+            rain_message = "No hay datos de precipitación disponibles"
+        else:
+            rainy_hours = sum(1 for h in precip_data if h["value"] > 0.1)
+            rain_prob = round((rainy_hours / total_hours) * 100, 1)
+            rain_message = f"Probabilidad aproximada de lluvia: {rain_prob}%"
+
         # Respuesta final
         return {
             "status": "success",
             "country": country,
             "lat": lat,
             "lon": lon,
-            "data": data
+            "data": data,
+            "rain_prediction": rain_message
         }
 
     except HTTPException:

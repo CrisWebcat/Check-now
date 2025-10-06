@@ -1,50 +1,50 @@
 # Check-now Backend
 
 
-Check-now es un backend en **FastAPI** que permite consultar datos meteorológicos y riesgos relacionados para cualquier país, utilizando la API de Meteomatics y NASA POWER.
+Check-now is a **FastAPI** backend that allows you to query meteorological data and related risks for any country, using the Meteomatics API and NASA POWER.
 ---
 
-## 🔧 Requisitos
+## 🔧 Requirements
 
 * Python 3.10+
 * Virtualenv
-* Dependencias listadas en `requirements.txt`
+* Dependencies listed in `requirements.txt`
 
 ---
 
-## 📁 Estructura del proyecto
+## 📁 Project structure
 
 ```
 Check-now/
 └── backend/
-    ├── app.py                  # Punto de entrada principal de FastAPI
-    ├── requirements.txt        # Dependencias del proyecto
-    ├── .env                    # Variables de entorno (credenciales Meteomatics)
-    ├── venv/                   # Entorno virtual
+    ├── app.py                  # FastAPI main entry point
+    ├── requirements.txt        # Project dependencies
+    ├── .env                    # Environment variables (Meteomatics credentials)
+    ├── venv/                   # Virtual environment
     ├── api/
     │   ├── __init__.py
-    │   ├── routes.py           # Todos los endpoints y validaciones
-    │   └── meteomatics.py      # Lógica para consumir API de Meteomatics
+    │   ├── routes.py           # All endpoints and validations
+    │   └── meteomatics.py      # Logic for consuming Meteomatics API
     ├── services/
     │   ├── __init__.py
-    │   └── nasa_power.py       # Lógica para consumir API de NASA POWER
+    │   └── nasa_power.py       # Logic to consume NASA POWER API
     └── models/
         ├── __init__.py
-        └── risk_model.py       # Función opcional compute_risk_probabilities
+        └── risk_model.py       # Optional function compute_risk_probabilities
 
 
 ---
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-1. Clonar el repositorio:
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/CrisWebcat/Check-now.git
 cd Check-now/backend
 ```
 
-2. Crear virtualenv e instalar dependencias:
+2. Create virtualenv and install dependencies:
 
 ```bash
 python3 -m venv venv
@@ -52,31 +52,30 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Crear archivo `.env` (NO subirlo) con tus credenciales de Meteomatics:
+3. Create a `.env` file (DO NOT upload it) with your Meteomatics credentials:
 
 ```
-METEO_USER=tu_usuario
-METEO_PASS=tu_password
+METEO_USER = your username
+METEO_PASS = your password
 ```
 
-> El backend usa estas variables para autenticar las consultas a Meteomatics.
+> The backend uses these variables to authenticate queries to Meteomatics.
 
 ---
 
-## 🚀 Ejecutar el servidor
-
+##  Run the server
 ```bash
 uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-* El servidor correrá en `http://127.0.0.1:8000`
-* Puedes probar los endpoints con `curl` o Postman.
+* The server will run at `http://127.0.0.1:8000`
+* You can test the endpoints with `curl` or Postman.
 
 ---
 
-## 📡 Endpoints disponibles
+## 📡 Available endpoints
 
-| Endpoint       | Método | Parámetros                                                         | Descripción                                                        | Ejemplo                                                                                  |
+| Endpoint       | Método | Parameters                                                        | Description                                                      | example                                                                                  |
 | -------------- | ------ | ------------------------------------------------------------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
 | `/api/`        | GET    | —                                                                  | Mensaje de bienvenida                                              | `http://127.0.0.1:8000/api/`                                                             |
 | `/api/health`  | GET    | —                                                                  | Estado del servidor                                                | `http://127.0.0.1:8000/api/health`                                                       |
@@ -86,7 +85,7 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 | `/api/nasa`    | GET    | `lat`, `lon`, `start`, `end`, `community` (opcional, default="AG") | Consulta NASA POWER (solar, temperatura, precipitación)            | `http://127.0.0.1:8000/api/nasa?lat=15.59&lon=-90.34&start=2025-10-05&end=2025-10-06`    |
 
 
-* **Respuesta**:
+* **Responses**:
 
 ```json
 {
@@ -117,7 +116,7 @@ GET /api/weather?lat=<latitud>&lon=<longitud>&start=<YYYY-MM-DD>&end=<YYYY-MM-DD
 }
 ```
 
-* **Errores comunes**:
+* **common errors**:
 
   * 400: Fechas inválidas o lat/lon fuera de rango
   * 500: Error al consultar Meteomatics (revisar credenciales o conexión)
@@ -125,15 +124,15 @@ GET /api/weather?lat=<latitud>&lon=<longitud>&start=<YYYY-MM-DD>&end=<YYYY-MM-DD
 
 ---Notas importantes
 
-/api/query permite obtener datos solo indicando el país; las coordenadas se calculan automáticamente.
+/api/query allows you to retrieve data by simply specifying the country; coordinates are calculated automatically.
 
-/api/nasa solo devuelve datos hasta la fecha actual; si se solicita una fecha futura, se recibe un warning.
+/api/nasa only returns data up to the current date; requesting a future date will result in a warning.
 
-Todos los endpoints están preparados para manejar errores HTTP y de conexión con las APIs externas.
+All endpoints are prepared to handle HTTP and connection errors with external APIs.
 
-El formato de fechas debe ser siempre YYYY-MM-DD.
+Dates must always be formatted as YYYY-MM-DD.
 
-Las coordenadas lat/lon deben estar en grados decimales válidos.
+Lat/lon coordinates must be in valid decimal degrees.
 
 ### 3. Risk
 
