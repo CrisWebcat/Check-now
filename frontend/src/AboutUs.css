@@ -1,0 +1,166 @@
+/* Estilos generales del contenedor */
+.about-container {
+  padding: 4rem 2rem;
+  text-align: center;
+  /* Fondo que imita un cielo suave o un amanecer/atardecer ligero */
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); /* Tonos celestes */
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #263238; /* Texto oscuro para buen contraste */
+}
+
+/* Título principal */
+.about-header h1 {
+  font-size: 3.5rem;
+  color: #00838f; /* Un turquesa profundo */
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para profundidad */
+}
+
+.about-header .subtitle {
+  font-size: 1.2rem;
+  color: #455a64;
+  margin-bottom: 3rem;
+  border-bottom: 3px solid #00bcd4; /* Línea separadora limpia */
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Sección de la Misión - La Tarjeta Central */
+.about-mission-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.mission-card {
+  background-color: white;
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 800px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.05); /* Sombra elegante */
+  position: relative;
+  overflow: hidden; /* Para que el ícono quede bien */
+  text-align: left;
+}
+
+.mission-card h2 {
+  color: #00bcd4;
+  font-size: 2rem;
+  margin-top: 0;
+}
+
+.mission-card p {
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.mission-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 4rem; /* Icono grande y flotante */
+  opacity: 0.2;
+}
+
+/* Sección de Filosofía - El Grid de Tarjetas */
+.about-team-philosophy h2 {
+    color: #00838f;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.philosophy-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.philosophy-item {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 15px;
+  width: 300px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 5px solid #00bcd4; /* Línea de acento */
+}
+
+.philosophy-item:hover {
+  transform: translateY(-5px); /* Efecto "flotante" al pasar el ratón */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.philosophy-item .icon {
+  font-size: 2.5rem;
+  color: #00bcd4;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.philosophy-item h3 {
+  color: #263238;
+  margin-top: 0;
+}
+
+/* Pie de Página y Llamada a la Acción */
+.about-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px dashed #90a4ae;
+}
+
+.about-footer p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cta-button {
+  background: linear-gradient(45deg, #00bcd4, #0097a7); /* Degradado llamativo */
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 50px; /* Botón píldora */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 188, 212, 0.6);
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 768px) {
+    .about-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .about-container {
+        padding: 3rem 1rem;
+    }
+
+    .mission-card {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .mission-icon {
+        display: none; /* Ocultar el ícono grande en móviles */
+    }
+
+    .philosophy-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .philosophy-item {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}

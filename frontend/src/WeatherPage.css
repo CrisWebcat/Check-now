@@ -1,0 +1,178 @@
+/* --------------------------------------------------- */
+/* FONDO DECORADO Y ESTILOS GENERALES                  */
+/* --------------------------------------------------- */
+body {
+    /* Fondo degradado suave: De azul claro a morado claro */
+    background: linear-gradient(135deg, #e0f7fa 0%, #ede7f6 100%);
+    min-height: 100vh; 
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* --------------------------------------------------- */
+/* LAYOUT PRINCIPAL: USANDO CSS GRID PARA 2x2          */
+/* --------------------------------------------------- */
+
+.weather-page {
+    display: grid;
+    /* Columna 1 (Inputs/Resultados): 1 parte | Columna 2 (Mapa): 3 partes */
+    grid-template-columns: 1fr 3fr; 
+    /* Fila 1 (Superior) | Fila 2 (Inferior) */
+    grid-template-rows: auto auto; 
+    gap: 20px;
+    
+    /* Padding superior para evitar que la barra de navegación tape el contenido */
+    padding: 80px 20px 20px 20px;
+    
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* --------------------------------------------------- */
+/* POSICIONAMIENTO DE ELEMENTOS EN EL GRID             */
+/* --------------------------------------------------- */
+
+/* 1. Recuadro de Inputs (Fila 1, Columna 1) */
+.weather-info {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    /* Fondo ligeramente opaco */
+    background-color: rgba(255, 255, 255, 0.95); 
+}
+
+/* 2. Mapa (Ocupa ambas filas, Columna 2) */
+.weather-details {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3; 
+    min-height: 500px; 
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* 3. Contenedor de Resultados/Actividades (Fila 2, Columna 1) */
+.results-activities-container {
+    grid-column: 1 / 2; 
+    grid-row: 2 / 3; 
+    
+    /* Usa Flexbox internamente para los dos recuadros */
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+}
+
+/* --------------------------------------------------- */
+/* ESTILOS DE LOS RECUADROS INTERNOS                   */
+/* --------------------------------------------------- */
+
+.weather-result,
+.activity-recommendations {
+    flex: 1 1 calc(50% - 10px); 
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    font-size: 100%;
+    line-height: 1.6;
+    transition: all 0.5s ease;
+}
+
+.weather-result {
+    background-color: rgba(255, 255, 255, 0.92);
+}
+
+.activity-recommendations {
+    background-color: rgba(230, 242, 255, 0.95); /* Azul muy suave */
+}
+
+.activity-recommendations h4,
+.weather-result h4 {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+    color: #007bff;
+}
+
+/* Estilos de inputs */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.weather-info input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.date-input {
+    flex-grow: 1;
+}
+
+.show-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.show-btn:hover {
+    background-color: #0056b3;
+}
+
+/* --------------------------------------------------- */
+/* RESPONSIVO (Ajuste para pantallas pequeñas)         */
+/* --------------------------------------------------- */
+
+@media (max-width: 900px) {
+    .weather-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto; 
+        max-width: 100%;
+        padding: 80px 10px 10px 10px; 
+    }
+    
+    .weather-info {
+        grid-row: 1 / 2;
+    }
+
+    .weather-details {
+        grid-row: 2 / 3; 
+        min-height: 300px;
+    }
+    
+    .results-activities-container {
+        grid-row: 3 / 4; 
+        flex-direction: column;
+    }
+    
+    .weather-result,
+    .activity-recommendations {
+        flex: 1 1 100%;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .show-btn {
+        width: 100%;
+    }
+}
