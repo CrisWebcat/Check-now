@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
 from datetime import datetime, date
-from api.meteomatics import fetch_meteomatics_timeseries # Asegúrate de que esta función exista
+from api.meteomatics import fetch_meteomatics_timeseries 
 from geopy.geocoders import Nominatim
-from services.nasa_power import fetch_nasa_power # Asegúrate de que esta función exista
+from services.nasa_power import fetch_nasa_power 
 import logging
+
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

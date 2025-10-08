@@ -6,13 +6,10 @@ import logging
 from geopy.geocoders import Nominatim
 from api.models import WeatherQueryData 
 
-
 try:
     from api.meteomatics import fetch_meteomatics_timeseries 
     from services.nasa_power import fetch_nasa_power 
 except ImportError as e:
-    # Esto ocurre si los archivos de servicio no existen o tienen errores de importación/ejecución
-    # Si ves este error, el problema está en api/meteomatics.py o services/nasa_power.py
     logging.error(f"Error al importar módulos de servicios externos: {e}")
 
     def fetch_meteomatics_timeseries(lat, lon, start, end, interval="PT1H"):
