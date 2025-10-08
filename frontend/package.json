@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-three/fiber": "^9.3.0",
     "animejs": "^4.2.1",
+    "cors": "^2.8.5",
     "leaflet": "^1.9.4",
     "mapbox-gl": "^3.15.0",
     "react": "^19.1.1",
