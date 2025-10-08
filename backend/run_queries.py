@@ -1,60 +1,38 @@
-# main.py (O el archivo principal donde inicializas FastAPI)
-
 from fastapi import FastAPI, APIRouter, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from datetime import datetime
 import logging
 from geopy.geocoders import Nominatim
+from api.models import WeatherQueryData 
 
-# -------------------------------------------------------------------------
-# IMPORTACIONES DE SERVICIOS EXTERNOS (ASUME QUE ESTOS ARCHIVOS EXISTEN)
-# -------------------------------------------------------------------------
-# Asegúrate de que estas funciones existan en tu proyecto
-# from api.meteomatics import fetch_meteomatics_timeseries 
-# from services.nasa_power import fetch_nasa_power 
 
-# Implementaciones ficticias para que el código compile si no tienes los archivos
-# Reemplaza esto con tus importaciones reales:
-def fetch_meteomatics_timeseries(lat, lon, start, end, interval="PT1H"):
-    # SIMULACIÓN DE RESPUESTA DE METEOMATICS
-    print(f"Llamando a Meteomatics para: {lat}, {lon}")
-    # Si esta función falla en tu código real (ej. por clave API), causa el error.
-    return {
-        "dates": [{"date": start + "T12:00:00Z", "value": 25.5}],
-        "t_2m:C": [{"date": start + "T12:00:00Z", "value": 25.5}],
-        "precip_1h:mm": [{"date": start + "T12:00:00Z", "value": 0.0}],
-        "wind_speed_10m:ms": [{"date": start + "T12:00:00Z", "value": 5.2}],
-        "global_rad:wm2": [{"date": start + "T12:00:00Z", "value": 600.0}],
-    }
-def fetch_nasa_power(lat, lon, start, end, parameters, community):
-    # SIMULACIÓN DE RESPUESTA DE NASA POWER
-    print(f"Llamando a NASA POWER para: {lat}, {lon}")
-    return {
-        "properties": {
-            "parameter": {
-                "T2M": {"20241005": 20.1}, 
-                "PRECTOT": {"20241005": 1.5},
-                "ALLSKY_SFC_SW_DWN": {"20241005": 550.0}
-            }
-        }
-    }
+try:
+    from api.meteomatics import fetch_meteomatics_timeseries 
+    from services.nasa_power import fetch_nasa_power 
+except ImportError as e:
+    # Esto ocurre si los archivos de servicio no existen o tienen errores de importación/ejecución
+    # Si ves este error, el problema está en api/meteomatics.py o services/nasa_power.py
+    logging.error(f"Error al importar módulos de servicios externos: {e}")
+
+    def fetch_meteomatics_timeseries(lat, lon, start, end, interval="PT1H"):
+        raise HTTPException(status_code=500, detail="Meteomatics service import failed.")
+    def fetch_nasa_power(lat, lon, start, end, parameters, community):
+        raise HTTPException(status_code=500, detail="NASA Power service import failed.")
+
 # -------------------------------------------------------------------------
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
 geolocator = Nominatim(user_agent="check_now_app")
 app = FastAPI()
 
 # -------------------------------------------------------------------------
-# CONFIGURACIÓN CORS (CRUCIAL PARA LA COMUNICACIÓN)
+# CONFIGURACIÓN CORS 
 # -------------------------------------------------------------------------
 origins = [
-    origins = [
-    "http://localhost:5180",
+    "http://localhost:5173",
     "http://127.0.0.1:5180",
 ]
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -66,7 +44,7 @@ app.add_middleware(
 # -------------------------------------------------------------------------
 
 
-# ---------- UTILS Y VALIDACIONES ----------
+# ---------- UTILS Y VALIDACIONES (MANTENIDOS IGUAL) ----------
 
 def validate_date_input(date_str: str):
     """Valida y convierte la cadena YYYY-MM-DDTmm:ss a datetime."""
@@ -132,9 +110,7 @@ def format_nasa_response(nasa_data: dict) -> dict:
     props = nasa_data.get("properties", {})
     parameter = props.get("parameter", {})
     
-    # Asume que el NASA fetch_nasa_power se usa para un solo día (YYYYMMDD)
-    # Buscamos la primera (y única) clave de fecha disponible
-    date_key = list(parameter.get("T2M", {}).keys())[0] if parameter.get("T2M") else None
+    date_key = list(parameter.get("T2M", {}).keys())[0] if parameter.get("T2M") and list(parameter.get("T2M", {}).keys()) else None
     
     temp = parameter.get("T2M", {}).get(date_key)
     precip = parameter.get("PRECTOT", {}).get(date_key)
@@ -149,44 +125,45 @@ def format_nasa_response(nasa_data: dict) -> dict:
     }
 
 
-# ---------- ENDPOINT PRINCIPAL (El que usa React) ----------
+# ------------------------------------------------------------------------
+# ---------- ENDPOINT PRINCIPAL (RUTA CORREGIDA) ----------
+# ------------------------------------------------------------------------
 
-@app.post("/query_weather") # Usa @app.post si este es el archivo principal
-async def query_weather(
-    lat: Optional[float] = None,
-    lon: Optional[float] = None,
-    country: Optional[str] = None,
-    city: Optional[str] = None,
-    locality: Optional[str] = None,
-    dateTime: str = Query(..., description="Fecha y hora (YYYY-MM-DDTmm:ss)")
-):
+# En run_queries.py
+@app.post("/query_weather") # <--- DEBE SER ASÍ
+async def query_weather(query_data: WeatherQueryData):
+    
     
     # 1. DETERMINAR LAT/LON
-    if lat is None or lon is None:
-        lat_final, lon_final = get_lat_lon_from_location(country, city, locality)
+    if query_data.lat is None or query_data.lon is None: 
+        lat_final, lon_final = get_lat_lon_from_location(
+            query_data.country, 
+            query_data.city, 
+            query_data.locality
+        )
     else:
-        validate_lat_lon(lat, lon)
-        lat_final, lon_final = lat, lon
+        validate_lat_lon(query_data.lat, query_data.lon)
+        lat_final, lon_final = query_data.lat, query_data.lon
         
     # 2. VALIDAR FECHA Y ESCOGER API
-    query_dt = validate_date_input(dateTime)
-    # Usamos today - 1 para asegurar que el día de hoy caiga en Meteomatics (pronóstico)
+    query_dt = validate_date_input(query_data.dateTime) 
+    
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     query_date_str = query_dt.strftime("%Y-%m-%d")
     is_future_or_present = query_dt.date() >= today.date()
     
     try:
         if is_future_or_present:
-            # A. PRONÓSTICO (Meteomatics)
+            # A. PRONÓSTICO (Meteomatics - REAL)
             data = fetch_meteomatics_timeseries(
                 lat_final, 
                 lon_final, 
                 query_date_str, 
                 query_date_str,
-                interval="PT1H" 
             )
-            if not isinstance(data, dict) or "error" in data:
-                 raise HTTPException(status_code=502, detail=f"Error desde Meteomatics: {data.get('error', str(data))}")
+            
+            if not isinstance(data, dict) or "error" in data or not data.get("t_2m:C"):
+                 raise HTTPException(status_code=502, detail=f"Error en datos de Meteomatics. Detalle: {data.get('error', 'Datos insuficientes o formato incorrecto.')}")
 
             rain_prediction = calculate_rain_prediction(data)
             return {
@@ -197,7 +174,7 @@ async def query_weather(
             }
 
         else:
-            # B. HISTÓRICO (NASA POWER)
+            # B. HISTÓRICO (NASA POWER - REAL)
             nasa_data = fetch_nasa_power(
                 lat_final, 
                 lon_final, 
@@ -208,7 +185,7 @@ async def query_weather(
             )
             
             if "errors" in nasa_data or not nasa_data.get("properties"):
-                raise HTTPException(status_code=502, detail="NASA POWER devolvió error o datos vacíos")
+                raise HTTPException(status_code=502, detail="NASA POWER devolvió error o datos vacíos.")
 
             return {
                 "status": "success", 
@@ -220,8 +197,6 @@ async def query_weather(
     except HTTPException:
         raise
     except Exception as e:
-        # Esto captura errores de red o errores internos en fetch_meteomatics/nasa
         logger.error(f"Error en query_weather: {e}")
-        raise HTTPException(status_code=500, detail=f"Error en el servidor al consultar API externa: {str(e)}")
-
-# Si estás usando un router, reemplaza @app.post con @router.post y añade app.include_router(router)
+        # Este error puede ser por credenciales, red, o la respuesta de la API real.
+        raise HTTPException(status_code=500, detail=f"Error al llamar a la API externa. Revise logs: {str(e)}")
